@@ -1,166 +1,102 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DealRocket 🚀 | Step Your Game Up</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --neon-green: #00ff88; --space-black: #05070a; }
-        body {
-            background-color: var(--space-black);
-            color: #e2e8f0;
-            font-family: 'Montserrat', sans-serif;
-            background-image: radial-gradient(circle at 50% 50%, #111827 0%, #05070a 100%);
-            min-height: 100 screen;
-        }
+        :root { --neon: #00ff88; --bg: #05070a; }
+        body { background: var(--bg); color: white; font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
         .space-font { font-family: 'Orbitron', sans-serif; }
-        .neon-text { color: var(--neon-green); text-shadow: 0 0 10px rgba(0, 255, 136, 0.5); }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .btn-primary { background: var(--neon-green); color: black; font-weight: 900; transition: all 0.3s; }
-        .btn-primary:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--neon-green); }
-        .input-field { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; width: 100%; margin-top: 5px; }
-        .input-field:focus { border-color: var(--neon-green); outline: none; }
+        .neon-text { color: var(--neon); text-shadow: 0 0 15px var(--neon); }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; }
+        .btn-neon { background: var(--neon); color: black; font-weight: 900; transition: 0.3s; box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+        .btn-neon:hover { transform: scale(1.05); box-shadow: 0 0 40px var(--neon); }
+        .input-dark { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; width: 100%; margin-top: 8px; }
+        .input-dark:focus { border-color: var(--neon); outline: none; }
         .hidden { display: none; }
-        .rocket-anim { animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center p-4">
+<body class="flex flex-col items-center justify-center min-h-screen p-6">
 
-    <!-- LANDING SECTION -->
-    <div id="landingPage" class="max-w-4xl text-center space-y-8 mt-20">
-        <div class="rocket-anim text-6xl">🚀</div>
-        <h1 class="space-font text-5xl md:text-7xl font-black italic tracking-tighter">
-            DEAL<span class="neon-text">ROCKET</span>
-        </h1>
-        <p class="text-gray-400 tracking-widest uppercase text-sm">Step Your Game Up</p>
-        <h2 class="text-2xl md:text-3xl font-light">Убийствени оферти, които затварят сделки вместо теб.</h2>
+    <!-- LANDING -->
+    <div id="landing" class="text-center space-y-8 max-w-4xl">
+        <h1 class="space-font text-6xl md:text-8xl italic tracking-tighter">DEAL<span class="neon-text">ROCKET</span> 🚀</h1>
+        <p class="text-gray-400 tracking-[0.3em] uppercase text-xs">Step Your Game Up</p>
+        <h2 class="text-2xl font-light leading-relaxed">Превърни офертите си в оръжие за продажби.</h2>
         
-        <div class="flex flex-col md:flex-row gap-4 justify-center mt-12">
-            <button onclick="showAuth('register')" class="btn-primary px-10 py-4 rounded-full uppercase tracking-tighter">Старт на мисията</button>
-            <button onclick="showAuth('login')" class="border border-white/20 px-10 py-4 rounded-full uppercase tracking-tighter hover:bg-white/5">Вход за пилоти</button>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 text-left">
-            <div class="glass p-6 rounded-2xl">
-                <div class="text-green-400 mb-2">📡 AI Навигатор</div>
-                <p class="text-xs text-gray-400">AI оптимизира текстовете ти за максимално въздействие.</p>
-            </div>
-            <div class="glass p-6 rounded-2xl">
-                <div class="text-green-400 mb-2">🛡️ Asteroid Defense</div>
-                <p class="text-xs text-gray-400">Автоматични протоколи и гаранции с дигитален подпис.</p>
-            </div>
-            <div class="glass p-6 rounded-2xl">
-                <div class="text-green-400 mb-2">📊 DealScore™</div>
-                <p class="text-xs text-gray-400">Система за оценка на силата на твоята оферта в реално време.</p>
-            </div>
+        <div class="flex gap-4 justify-center mt-12">
+            <button onclick="openAuth('register')" class="btn-neon px-12 py-5 rounded-full uppercase italic">Старт на мисията</button>
+            <button onclick="openAuth('login')" class="border border-white/20 px-12 py-5 rounded-full uppercase hover:bg-white/5 transition">Вход</button>
         </div>
     </div>
 
     <!-- AUTH MODAL -->
-    <div id="authModal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden p-4 z-50">
-        <div class="glass max-w-md w-full p-8 rounded-3xl relative">
-            <button onclick="closeAuth()" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
-            <h2 id="authTitle" class="space-font text-2xl mb-6 neon-text">РЕГИСТРАЦИЯ</h2>
-            
+    <div id="authModal" class="fixed inset-0 bg-black/90 flex items-center justify-center hidden p-4 z-50">
+        <div class="glass p-10 w-full max-w-md relative">
+            <button onclick="closeAuth()" class="absolute top-6 right-6 text-gray-500">✕</button>
+            <h2 id="authTitle" class="space-font text-2xl neon-text mb-8 uppercase tracking-widest">Регистрация</h2>
             <form id="authForm" class="space-y-4">
-                <div id="regFields" class="space-y-4">
-                    <div>
-                        <label class="text-xs font-bold text-gray-500 uppercase">Тип профил</label>
-                        <select id="userType" onchange="toggleBizFields()" class="input-field">
-                            <option value="Freelancer">Фрийлансър / Частно лице</option>
-                            <option value="Company">Фирма (ЕООД/ООД/ЕТ)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-gray-500 uppercase">Име / Бранд / Фирма</label>
-                        <input type="text" id="displayName" class="input-field" placeholder="Напр. Иван Иванов или Елит Ремонти">
-                    </div>
-                    <div id="companyField" class="hidden">
-                        <label class="text-xs font-bold text-gray-500 uppercase">ЕИК</label>
-                        <input type="text" id="regNumber" class="input-field" placeholder="123456789">
-                    </div>
+                <div id="regOnly">
+                    <select id="userType" onchange="toggleBiz()" class="input-dark">
+                        <option value="Freelancer">Аз съм Фрийлансър</option>
+                        <option value="Company">Аз съм Фирма</option>
+                    </select>
+                    <input type="text" id="name" placeholder="Име / Бранд / Фирма" class="input-dark mt-4">
+                    <input type="text" id="regNum" placeholder="ЕИК (само за фирми)" class="input-dark hidden">
                 </div>
-
-                <div>
-                    <label class="text-xs font-bold text-gray-500 uppercase">Имейл</label>
-                    <input type="email" id="email" class="input-field" required>
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-gray-500 uppercase">Парола</label>
-                    <input type="password" id="password" class="input-field" required>
-                </div>
-
-                <button type="submit" id="submitBtn" class="btn-primary w-full py-4 rounded-xl mt-4">ИЗСТРЕЛВАНЕ 🚀</button>
-                <p id="authMsg" class="text-xs text-center mt-4"></p>
+                <input type="email" id="email" placeholder="Твоят Имейл" class="input-dark">
+                <input type="password" id="password" placeholder="Парола" class="input-dark">
+                <button type="submit" id="subBtn" class="btn-neon w-full py-5 rounded-2xl uppercase mt-6 shadow-lg">ИЗСТРЕЛВАНЕ 🚀</button>
+                <p id="msg" class="text-xs text-center mt-6"></p>
             </form>
         </div>
     </div>
 
     <script>
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhckte9EXQX9OA5CLg5DkIGQVudFjlj8PypwLKvd880fPEn-Zr-bPWlUAvdCazRd1m8A/exec";
-        let currentMode = 'register';
+        const API_URL = "https://script.google.com/macros/s/AKfycbzhckte9EXQX9OA5CLg5DkIGQVudFjlj8PypwLKvd880fPEn-Zr-bPWlUAvdCazRd1m8A/exec";
+        let mode = 'register';
 
-        function showAuth(mode) {
-            currentMode = mode;
+        function openAuth(m) {
+            mode = m;
             document.getElementById('authModal').classList.remove('hidden');
-            document.getElementById('authTitle').innerText = mode === 'register' ? 'РЕГИСТРАЦИЯ' : 'ВХОД ЗА ПИЛОТИ';
-            document.getElementById('regFields').style.display = mode === 'register' ? 'block' : 'none';
-            document.getElementById('submitBtn').innerText = mode === 'register' ? 'СЪЗДАЙ ПРОФИЛ' : 'ВЛЕЗ В КОКПИТА';
+            document.getElementById('authTitle').innerText = m === 'register' ? 'Регистрация' : 'Вход';
+            document.getElementById('regOnly').classList.toggle('hidden', m === 'login');
+            document.getElementById('subBtn').innerText = m === 'register' ? 'Създай Профил' : 'Влез в Кокпита';
         }
 
-        function closeAuth() {
-            document.getElementById('authModal').classList.add('hidden');
-        }
-
-        function toggleBizFields() {
-            const type = document.getElementById('userType').value;
-            document.getElementById('companyField').classList.toggle('hidden', type === 'Freelancer');
-        }
+        function closeAuth() { document.getElementById('authModal').classList.add('hidden'); }
+        function toggleBiz() { document.getElementById('regNum').classList.toggle('hidden', document.getElementById('userType').value === 'Freelancer'); }
 
         document.getElementById('authForm').onsubmit = async (e) => {
             e.preventDefault();
-            const msg = document.getElementById('authMsg');
-            msg.innerText = "Подготовка за изстрелване...";
+            const msg = document.getElementById('msg');
+            msg.innerText = "Свързване с базата данни...";
 
             const payload = {
-                action: currentMode,
+                action: mode,
                 email: document.getElementById('email').value,
-                password: document.getElementById('password').value
+                password: document.getElementById('password').value,
+                userType: document.getElementById('userType').value,
+                name: document.getElementById('name').value,
+                regNumber: document.getElementById('regNum').value
             };
 
-            if (currentMode === 'register') {
-                payload.userType = document.getElementById('userType').value;
-                payload.name = document.getElementById('displayName').value;
-                payload.regNumber = document.getElementById('regNumber').value;
-            }
+            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const result = await res.json();
 
-            try {
-                const response = await fetch(APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
-                });
-                const result = await response.json();
-
-                if (result.result === 'success') {
-                    if (currentMode === 'register') {
-                        msg.className = "text-green-400 text-xs text-center mt-4";
-                        msg.innerText = "Профилът е създаден! Вече можеш да влезеш.";
-                        setTimeout(() => showAuth('login'), 2000);
-                    } else {
-                        localStorage.setItem('dr_user', JSON.stringify(result.user));
-                        msg.innerText = "Връзка с базата установена! Влизаме...";
-                        // ТУК ЩЕ ПРЕНАСОЧИМ КЪМ DASHBOARD
-                        window.location.href = "dashboard.html";
-                    }
+            if (result.result === 'success') {
+                if (mode === 'register') {
+                    alert("Профилът е създаден! Вече можеш да влезеш.");
+                    location.reload();
                 } else {
-                    msg.className = "text-red-400 text-xs text-center mt-4";
-                    msg.innerText = "Грешка: " + result.message;
+                    localStorage.setItem('dr_user', JSON.stringify(result.user));
+                    window.location.href = "dashboard.html";
                 }
-            } catch (err) {
-                msg.innerText = "Хюстън, имаме проблем с връзката.";
+            } else {
+                msg.innerText = "Грешка: " + result.message;
+                msg.classList.add('text-red-500');
             }
         };
     </script>
