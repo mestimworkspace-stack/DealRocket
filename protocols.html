@@ -2,7 +2,7 @@
 <html lang="bg">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asteroid Defense | DealRocket 🛡️</title>
+    <title>Приемане и Гаранция | DealRocket 🛡️</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
@@ -15,129 +15,127 @@
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; }
         .input-dark { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 12px; width: 100%; color: white; font-size: 0.85rem; }
         .input-dark:focus { border-color: var(--neon-blue); outline: none; }
-        #signature-pad { background: white; border-radius: 12px; border: 2px solid var(--neon-blue); cursor: crosshair; touch-action: none; }
+        .sig-box { background: white; border-radius: 10px; border: 2px solid var(--neon-blue); cursor: crosshair; touch-action: none; width: 100%; height: 120px; }
         
         /* PREVIEW AREA (A4) */
-        #pdf-preview-wrap { background: #111; padding: 40px; display: flex; justify-content: center; overflow-x: auto; }
+        #pdf-preview-wrap { background: #000; padding: 40px; display: flex; justify-content: center; overflow-x: auto; }
         #pdf-preview { background: white; color: #1a202c; width: 794px; min-height: 1123px; padding: 70px; position: relative; transform: scale(0.65); transform-origin: top center; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
         .proto-header { border-bottom: 3px solid #1a202c; padding-bottom: 20px; margin-bottom: 40px; }
-        .section-title { font-weight: 800; text-transform: uppercase; font-size: 10px; color: #718096; letter-spacing: 1px; border-bottom: 1px solid #edf2f7; padding-bottom: 5px; margin-bottom: 10px; }
+        .hidden { display: none; }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
     <header class="max-w-7xl mx-auto flex justify-between items-center mb-10">
-        <div class="space-font text-xl neon-blue-text italic cursor-pointer" onclick="window.location.href='dashboard.html'">DEALROCKET 🚀</div>
-        <div class="text-[10px] text-blue-400 uppercase tracking-widest font-bold border border-blue-500/30 px-4 py-1 rounded-full">System: Asteroid Defense 🛡️</div>
+        <div class="space-font text-xl neon-blue-text italic cursor-pointer" onclick="location.href='dashboard.html'">DEALROCKET 🚀</div>
+        <div class="text-[10px] text-blue-400 uppercase tracking-widest font-bold border border-blue-500/30 px-4 py-1 rounded-full text-center">Система за приемане на обекти</div>
     </header>
 
     <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        <!-- ЛЯВО: ПАРАМЕТРИ -->
+        <!-- КОНТРОЛИ -->
         <div class="lg:col-span-5 space-y-6 max-h-screen overflow-y-auto pb-20 no-scrollbar">
             
-            <!-- КЛИЕНТ -->
             <div class="glass p-6 space-y-4">
-                <h3 class="text-blue-400 font-bold text-xs uppercase tracking-widest">1. Данни на Клиента</h3>
+                <h3 class="text-blue-400 font-bold text-xs uppercase tracking-widest italic">1. Данни на Възложителя</h3>
                 <input type="text" id="clientName" oninput="updateProto()" class="input-dark" placeholder="Име на клиент / Фирма">
-                <input type="text" id="clientAddr" oninput="updateProto()" class="input-dark" placeholder="Адрес на обект / Обект">
-                <input type="text" id="clientPhone" oninput="updateProto()" class="input-dark" placeholder="Телефон за връзка">
+                <input type="text" id="clientAddr" oninput="updateProto()" class="input-dark" placeholder="Адрес на обекта">
+                <input type="text" id="clientPhone" oninput="updateProto()" class="input-dark" placeholder="Телефон на клиента">
             </div>
 
-            <!-- ДЕЙНОСТ -->
             <div class="glass p-6 space-y-4">
-                <h3 class="text-blue-400 font-bold text-xs uppercase tracking-widest">2. Описание на работата</h3>
-                <textarea id="workDone" oninput="updateProto()" class="input-dark h-32" placeholder="Опиши детайлно какво е извършено..."></textarea>
+                <h3 class="text-blue-400 font-bold text-xs uppercase tracking-widest italic">2. Описание и Гаранция</h3>
+                <textarea id="workDone" oninput="updateProto()" class="input-dark h-32" placeholder="Опиши детайлно какво е извършено и какви материали са вложени..."></textarea>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="text-[10px] text-gray-500 font-bold uppercase">Гаранция (мес.)</label>
+                        <label class="text-[9px] text-gray-500 font-bold uppercase">Гаранция (месеца)</label>
                         <input type="number" id="warranty" oninput="updateProto()" class="input-dark" value="24">
                     </div>
                     <div>
-                        <label class="text-[10px] text-gray-500 font-bold uppercase">Дата</label>
+                        <label class="text-[9px] text-gray-500 font-bold uppercase">Дата на предаване</label>
                         <input type="date" id="finishDate" oninput="updateProto()" class="input-dark">
                     </div>
                 </div>
             </div>
 
-            <!-- ПОДПИС -->
-            <div class="glass p-6 space-y-4">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-blue-400 font-bold text-xs uppercase tracking-widest">3. Подпис на Клиента</h3>
-                    <button onclick="clearSig()" class="text-red-400 text-[10px] font-bold uppercase hover:underline">Изчисти</button>
+            <div class="glass p-6 space-y-6">
+                <h3 class="text-blue-400 font-bold text-xs uppercase tracking-widest italic">3. Дигитални подписи</h3>
+                
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-[9px] uppercase font-bold text-gray-500">Подпис: ИЗПЪЛНИТЕЛ</span>
+                        <button onclick="clearSig('sig-exec')" class="text-red-400 text-[9px] uppercase">Изчисти</button>
+                    </div>
+                    <canvas id="sig-exec" class="sig-box"></canvas>
                 </div>
-                <canvas id="signature-pad" class="w-full h-40"></canvas>
-                <p class="text-[9px] text-gray-500 italic text-center">Клиентът се подписва с пръст или мишка в бялото поле.</p>
+
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-[9px] uppercase font-bold text-gray-500">Подпис: КЛИЕНТ</span>
+                        <button onclick="clearSig('sig-client')" class="text-red-400 text-[9px] uppercase">Изчисти</button>
+                    </div>
+                    <canvas id="sig-client" class="sig-box"></canvas>
+                </div>
             </div>
 
-            <button onclick="exportProto()" class="w-full bg-blue-600 text-white font-black py-5 rounded-2xl shadow-lg uppercase tracking-widest transition hover:scale-[1.02] active:scale-95">Генерирай Документ 🚀</button>
+            <button onclick="exportProto()" class="w-full bg-blue-600 text-white font-black py-5 rounded-2xl shadow-lg uppercase tracking-widest transition hover:scale-[1.02] active:scale-95">Генерирай Протокол 🚀</button>
         </div>
 
-        <!-- ДЯСНО: PREVIEW -->
+        <!-- PREVIEW -->
         <div class="lg:col-span-7" id="pdf-preview-wrap">
             <div id="pdf-preview">
-                <!-- HEADER -->
-                <div class="proto-header flex justify-between items-end">
+                <div class="proto-header flex justify-between items-start">
                     <div>
                         <h1 class="text-3xl font-black uppercase tracking-tighter leading-none text-gray-900">Приемо-предавателен <br>Протокол</h1>
-                        <p class="text-[10px] text-gray-400 font-bold mt-3">РЕФЕРЕНТЕН НОМЕР: <span id="protoID" class="text-gray-900">...</span></p>
+                        <p class="text-[10px] text-gray-400 font-bold mt-4 uppercase">Документ № <span id="protoID" class="text-black">...</span></p>
                     </div>
                     <div class="text-right">
-                        <p class="space-font text-xl italic font-black text-blue-600">DEALROCKET</p>
-                        <p class="text-[8px] text-gray-400 uppercase tracking-widest">Certified Professional</p>
+                        <img id="outLogo" src="" class="h-16 w-auto ml-auto mb-2">
+                        <p id="outCompanyName" class="font-black text-xl text-blue-600 italic leading-none"></p>
+                        <p class="text-[8px] text-gray-400 uppercase tracking-widest mt-1">Официално приет обект</p>
                     </div>
                 </div>
 
                 <div class="text-xs text-gray-700 space-y-8">
-                    <p>Днес, <span id="outDate" class="font-bold border-b border-gray-200">...</span>, се състави настоящият протокол, с който страните удостоверяват приемането на извършената работа.</p>
+                    <p>Днес, <span id="outDate" class="font-bold">...</span> г., страните потвърждават предаването и приемането на извършената работа без забележки.</p>
 
-                    <!-- СТРАНИ -->
                     <div class="grid grid-cols-2 gap-10">
-                        <div>
-                            <p class="section-title">Изпълнител</p>
-                            <p id="outMyName" class="font-bold text-sm text-gray-900"></p>
-                            <p id="outMyID" class="text-gray-500"></p>
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <p class="text-[9px] font-black text-gray-400 uppercase mb-2">ИЗПЪЛНИТЕЛ</p>
+                            <p id="outMyName" class="font-bold text-sm text-gray-900 uppercase"></p>
+                            <p id="outMyID" class="text-gray-500 mt-1"></p>
                             <p id="outMyPhone" class="text-gray-500"></p>
                         </div>
-                        <div>
-                            <p class="section-title">Възложител (Клиент)</p>
-                            <p id="outClientName" class="font-bold text-sm text-gray-900 italic"></p>
-                            <p id="outClientAddr" class="text-gray-600"></p>
-                            <p id="outClientPhone" class="text-gray-600"></p>
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <p class="text-[9px] font-black text-gray-400 uppercase mb-2">ВЪЗЛОЖИТЕЛ (КЛИЕНТ)</p>
+                            <p id="outClientName" class="font-bold text-sm text-gray-900 italic">...</p>
+                            <p id="outClientAddr" class="text-gray-500 mt-1"></p>
+                            <p id="outClientPhone" class="text-gray-500"></p>
                         </div>
                     </div>
 
-                    <!-- ОПИСАНИЕ -->
                     <div>
-                        <p class="section-title">Описание на приетата работа и материали</p>
-                        <div id="outWork" class="bg-gray-50 p-6 rounded-lg min-h-[150px] leading-relaxed italic text-gray-700">
-                            Опиши извършената работа...
-                        </div>
+                        <p class="text-[9px] font-black text-gray-400 uppercase mb-2 border-b pb-1">Описание на приетата работа</p>
+                        <div id="outWork" class="p-4 rounded-lg min-h-[150px] leading-relaxed text-gray-800 italic">...</div>
                     </div>
 
-                    <!-- ГАРАНЦИЯ -->
-                    <div class="p-6 border-2 border-blue-100 bg-blue-50/30 rounded-xl relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-2 opacity-10 text-4xl">🛡️</div>
-                        <h4 class="font-black text-blue-600 uppercase text-[10px] mb-2 tracking-widest italic">Гаранционни условия</h4>
+                    <div class="p-6 bg-blue-50/50 rounded-xl border border-blue-100">
+                        <h4 class="font-black text-blue-700 uppercase text-[10px] mb-2 tracking-widest italic">Гаранционни условия</h4>
                         <p class="leading-relaxed">
-                            Изпълнителят гарантира качеството на извършените дейности за период от <span id="outWarranty" class="font-bold text-blue-600 text-lg">24</span> месеца, считано от датата на подписване. Гаранцията е валидна при спазване на правилата за експлоатация.
+                            Изпълнителят гарантира качеството на извършената дейност за период от <span id="outWarranty" class="font-bold text-blue-600 text-lg">24</span> месеца. Гаранцията влиза в сила от датата на подписване на настоящия протокол.
                         </p>
                     </div>
 
-                    <p class="text-[10px] text-gray-400 italic">
-                        С подписването на настоящия протокол, Възложителят потвърждава, че работата е приета без забележки и отговаря на договореното качество.
-                    </p>
-
-                    <!-- ПОДПИСИ -->
                     <div class="mt-20 flex justify-between items-end">
                         <div class="text-center">
-                            <div class="w-40 border-b border-gray-300 mb-2"></div>
-                            <p class="text-[8px] font-bold uppercase text-gray-400">Изпълнител</p>
+                            <img id="img-sig-exec" src="" class="h-16 w-auto mx-auto hidden border-b border-gray-200">
+                            <div id="sig-exec-line" class="w-40 border-b border-gray-300 h-16"></div>
+                            <p class="text-[8px] font-bold uppercase text-gray-400 mt-2">Изпълнител / Служител</p>
                         </div>
-                        <div class="text-center relative">
-                            <img id="sigImg" src="" class="h-20 w-auto mx-auto hidden absolute bottom-4 left-1/2 -translate-x-1/2">
-                            <div id="sigPlaceholder" class="h-20 w-48 border-b-2 border-dashed border-blue-200 mb-2"></div>
-                            <p class="text-[8px] font-bold uppercase text-gray-400">Възложител (Подпис)</p>
+                        <div class="text-center">
+                            <img id="img-sig-client" src="" class="h-16 w-auto mx-auto hidden border-b border-gray-200">
+                            <div id="sig-client-line" class="w-40 border-b border-gray-300 h-16"></div>
+                            <p class="text-[8px] font-bold uppercase text-gray-400 mt-2">Възложител (Подпис)</p>
                         </div>
                     </div>
                 </div>
@@ -146,72 +144,81 @@
     </main>
 
     <script>
-        const userData = JSON.parse(localStorage.getItem('dr_user'));
-        if(!userData) window.location.href = "index.html";
+        const u = JSON.parse(localStorage.getItem('dr_user'));
+        if(!u) location.href='index.html';
 
-        // Signature Pad
-        const canvas = document.getElementById("signature-pad");
-        const signaturePad = new SignaturePad(canvas, {
-            backgroundColor: 'rgba(255, 255, 255, 0)',
-            penColor: 'rgb(0, 50, 150)'
-        });
+        const canvasExec = document.getElementById("sig-exec");
+        const canvasClient = document.getElementById("sig-client");
+        const padExec = new SignaturePad(canvasExec);
+        const padClient = new SignaturePad(canvasClient);
 
-        function resizeCanvas() {
-            const ratio =  Math.max(window.devicePixelRatio || 1, 1);
-            canvas.width = canvas.offsetWidth * ratio;
-            canvas.height = canvas.offsetHeight * ratio;
-            canvas.getContext("2d").scale(ratio, ratio);
-            signaturePad.clear();
+        function resizeCanvases() {
+            [canvasExec, canvasClient].forEach(c => {
+                const ratio = Math.max(window.devicePixelRatio || 1, 1);
+                c.width = c.offsetWidth * ratio;
+                c.height = c.offsetHeight * ratio;
+                c.getContext("2d").scale(ratio, ratio);
+            });
+            padExec.clear(); padClient.clear();
         }
-        window.onresize = resizeCanvas;
-        resizeCanvas();
+        window.onresize = resizeCanvases;
+        resizeCanvases();
 
-        function clearSig() { 
-            signaturePad.clear(); 
-            document.getElementById('sigImg').classList.add('hidden');
-            document.getElementById('sigPlaceholder').classList.remove('hidden');
+        function clearSig(id) {
+            if(id === 'sig-exec') { padExec.clear(); document.getElementById('img-sig-exec').classList.add('hidden'); document.getElementById('sig-exec-line').classList.remove('hidden'); }
+            else { padClient.clear(); document.getElementById('img-sig-client').classList.add('hidden'); document.getElementById('sig-client-line').classList.remove('hidden'); }
         }
 
-        // Синхронизация
         function updateProto() {
             document.getElementById('outClientName').innerText = document.getElementById('clientName').value || "ИМЕ НА КЛИЕНТ";
             document.getElementById('outClientAddr').innerText = document.getElementById('clientAddr').value || "АДРЕС НА ОБЕКТ";
             document.getElementById('outClientPhone').innerText = document.getElementById('clientPhone').value ? "Тел: " + document.getElementById('clientPhone').value : "";
-            
+            document.getElementById('outWork').innerText = document.getElementById('workDone').value || "Опиши извършената работа...";
             document.getElementById('outWarranty').innerText = document.getElementById('warranty').value;
             document.getElementById('outDate').innerText = new Date(document.getElementById('finishDate').value || Date.now()).toLocaleDateString('bg-BG');
-            document.getElementById('outWork').innerText = document.getElementById('workDone').value || "Няма подробно описание...";
-            
-            if(!signaturePad.isEmpty()) {
-                document.getElementById('sigImg').src = signaturePad.toDataURL();
-                document.getElementById('sigImg').classList.remove('hidden');
-                document.getElementById('sigPlaceholder').classList.add('hidden');
+
+            if(!padExec.isEmpty()) {
+                document.getElementById('img-sig-exec').src = padExec.toDataURL();
+                document.getElementById('img-sig-exec').classList.remove('hidden');
+                document.getElementById('sig-exec-line').classList.add('hidden');
+            }
+            if(!padClient.isEmpty()) {
+                document.getElementById('img-sig-client').src = padClient.toDataURL();
+                document.getElementById('img-sig-client').classList.remove('hidden');
+                document.getElementById('sig-client-line').classList.add('hidden');
             }
         }
 
-        canvas.addEventListener("touchend", updateProto);
-        canvas.addEventListener("mouseup", updateProto);
+        [canvasExec, canvasClient].forEach(c => {
+            c.addEventListener("touchend", updateProto);
+            c.addEventListener("mouseup", updateProto);
+        });
 
-        async function exportProto() {
-            if(signaturePad.isEmpty()) {
-                alert("⚠️ Клиентът трябва да се разпише!");
-                return;
-            }
-            const element = document.getElementById('pdf-preview');
-            html2pdf().from(element).set({
-                margin: 0,
-                filename: 'DR_Protocol_' + document.getElementById('clientName').value + '.pdf',
-                html2canvas: { scale: 3 },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        function exportProto() {
+            if(padClient.isEmpty()) { alert("⚠️ Моля, клиентът да се разпише!"); return; }
+            html2pdf().from(document.getElementById('pdf-preview')).set({
+                margin: 0, filename: 'Protocol_' + (document.getElementById('clientName').value || 'New') + '.pdf',
+                html2canvas: { scale: 3 }, jsPDF: { unit: 'in', format: 'a4' }
             }).save();
         }
 
         // Init
-        document.getElementById('outMyName').innerText = userData.name.toUpperCase();
-        document.getElementById('outMyID').innerText = userData.reg ? "ЕИК: " + userData.reg : "Професионални услуги";
-        document.getElementById('outMyPhone').innerText = userData.phone ? "Тел: " + userData.phone : "";
+        document.getElementById('outMyName').innerText = u.name.toUpperCase();
+        document.getElementById('outCompanyName').innerText = u.name.toUpperCase();
+        document.getElementById('pName').innerText = u.name.toUpperCase();
+        document.getElementById('pID').innerText = u.reg ? "ЕИК: " + u.reg : "Професионални услуги";
+        document.getElementById('pPhone').innerText = u.phone ? "Тел: " + u.phone : "";
         document.getElementById('protoID').innerText = "AD-" + Math.floor(Math.random() * 1000000);
         document.getElementById('finishDate').valueAsDate = new Date();
+
+        if(u.logo && localStorage.getItem('dr_logo_hidden') !== 'true') {
+            document.getElementById('outLogo').src = u.logo;
+            document.getElementById('outCompanyName').classList.add('hidden');
+        } else {
+            document.getElementById('outLogo').classList.add('hidden');
+            document.getElementById('outCompanyName').classList.remove('hidden');
+        }
+
         updateProto();
     </script>
 </body>
