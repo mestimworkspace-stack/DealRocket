@@ -5,317 +5,218 @@
     <title>Генератор Pro | DealRocket 🚀</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Playfair+Display:wght@700&family=JetBrains+Mono&display=swap" rel="stylesheet">
     <style>
         :root { --neon: #00ff88; --bg: #05070a; }
-        body { background: var(--bg); color: white; font-family: 'Montserrat', sans-serif; background-image: radial-gradient(circle at 50% 50%, #111827 0%, #05070a 100%); }
-        .space-font { font-family: 'Orbitron', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; }
-        .fuel-bar { height: 12px; background: #1a1d23; border-radius: 6px; overflow: hidden; }
-        .fuel-fill { height: 100%; width: 0%; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; }
+        .input-dark { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; width: 100%; color: white; font-size: 0.8rem; }
         
-        /* ПРЕГЛЕД НА PDF (A4 Format) */
-        #pdf-preview-container { background: #ccc; padding: 20px; overflow-x: auto; display: flex; justify-content: center; }
-        #pdf-area { background: white; color: #1a202c; width: 794px; min-height: 1123px; padding: 60px; position: relative; box-shadow: 0 0 50px rgba(0,0,0,0.5); transform: scale(0.65); transform-origin: top center; }
-        
-        /* ТЕМИ НА PDF */
-        .theme-cosmos { border-top: 20px solid #00ff88; }
-        .theme-cosmos th { background: #05070a; color: #00ff88; font-family: 'Orbitron'; font-size: 10px; }
-        .theme-cosmos .accent { color: #00ff88; font-weight: 900; }
+        /* КОНТЕЙНЕР ЗА ПРЕГЛЕД */
+        #pdf-preview-wrap { background: #111; padding: 40px; display: flex; justify-content: center; overflow-x: auto; }
+        #pdf-area { background: white; color: #1a202c; width: 794px; min-height: 1123px; padding: 50px; position: relative; transform: scale(0.7); transform-origin: top center; box-shadow: 0 0 40px rgba(0,0,0,0.5); }
 
-        .theme-architect { border: 2px solid #2563eb; background-image: radial-gradient(#e5e7eb 1px, transparent 1px); background-size: 20px 20px; }
-        .theme-architect th { background: #2563eb; color: white; font-family: monospace; }
-        .theme-architect h1 { font-family: monospace; letter-spacing: 10px; color: #2563eb; border-bottom: 2px solid #2563eb; }
+        /* --- ТЕМА 1: ZENITH (Modern High-Tech) --- */
+        .theme-zenith { border-left: 12px solid #00ff88; }
+        .theme-zenith h1 { font-weight: 900; letter-spacing: -2px; font-size: 45px; text-transform: uppercase; color: #000; }
+        .theme-zenith th { background: #f4f4f5; color: #000; text-transform: uppercase; font-size: 10px; letter-spacing: 1px; padding: 15px; }
+        .theme-zenith .accent-line { width: 50px; height: 4px; background: #00ff88; margin-bottom: 20px; }
 
-        .theme-classic { border: 1px solid #92400e; font-family: 'Georgia', serif; padding: 80px !important; }
-        .theme-classic th { border-bottom: 2px solid #92400e; background: none; color: #92400e; text-transform: uppercase; }
-        .theme-classic h1 { font-family: 'Georgia', serif; color: #92400e; border-bottom: 1px solid #92400e; padding-bottom: 10px; }
+        /* --- ТЕМА 2: BLUEPRINT (Industrial/Technical) --- */
+        .theme-blueprint { border: 1px solid #e2e8f0; }
+        .theme-blueprint::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px); background-size: 30px 30px; z-index: 0; opacity: 0.5; }
+        .theme-blueprint * { z-index: 1; position: relative; }
+        .theme-blueprint h1 { font-family: 'JetBrains Mono', monospace; font-weight: bold; border: 2px solid #000; padding: 10px 20px; display: inline-block; }
+        .theme-blueprint th { border: 1px solid #000; background: #000; color: #fff; }
+
+        /* --- ТЕМА 3: ELEGANCE (Premium/Minimal) --- */
+        .theme-elegance { font-family: 'Inter', sans-serif; padding: 80px !important; }
+        .theme-elegance h1 { font-family: 'Playfair Display', serif; font-size: 38px; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 30px; margin-bottom: 40px; }
+        .theme-elegance th { border-bottom: 2px solid #111; background: none; color: #111; text-align: left; }
+        .theme-elegance .total-box { background: #fafafa; padding: 20px; border-radius: 10px; }
 
         .hidden { display: none; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 flex flex-col lg:flex-row gap-8">
 
-    <header class="max-w-7xl mx-auto flex justify-between items-center mb-8">
-        <div class="space-font text-xl neon-text italic cursor-pointer" onclick="window.location.href='dashboard.html'">DEALROCKET 🚀</div>
-        <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Генератор на Мисии v3.2</div>
-    </header>
-
-    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        <!-- ЛЯВО: КОНТРОЛЕН ПАНЕЛ -->
-        <div class="lg:col-span-5 space-y-6 max-h-screen overflow-y-auto pb-20 no-scrollbar">
+    <!-- КОНТРОЛЕН ПАНЕЛ -->
+    <div class="lg:w-1/3 space-y-4 max-h-screen overflow-y-auto pb-20 no-scrollbar">
+        <div class="glass p-6 space-y-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-green-400 font-bold text-xs uppercase tracking-widest">Конфигурация</h2>
+                <select id="themeSelect" onchange="setTheme(this.value)" class="bg-white/5 border border-white/10 text-[10px] p-1 rounded">
+                    <option value="zenith">ZENITH STYLE</option>
+                    <option value="blueprint">BLUEPRINT STYLE</option>
+                    <option value="elegance">ELEGANCE STYLE</option>
+                </select>
+            </div>
             
-            <div class="glass p-6 space-y-4">
-                <h3 class="text-green-400 font-bold text-xs uppercase tracking-widest">1. Настройка на Документа</h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <select id="docType" onchange="update()" class="bg-black/40 border border-white/10 p-3 rounded-xl text-sm">
-                        <option value="ОФЕРТА">ОФЕРТА</option>
-                        <option value="ПРЕДЛОЖЕНИЕ">ПРЕДЛОЖЕНИЕ</option>
-                        <option value="ПРОТОКОЛ">ПРОТОКОЛ</option>
-                    </select>
-                    <select id="niche" onchange="updateNiche()" class="bg-black/40 border border-white/10 p-3 rounded-xl text-sm">
-                        <option value="laminate">🏗️ Ремонти / Ламинат</option>
-                        <option value="influencer">📸 Инфлуенсър / Криетив</option>
-                        <option value="legal">⚖️ Адвокатски услуги</option>
-                        <option value="it">💻 IT / Софтуер</option>
-                        <option value="hvac">🌬️ Климатици / Солари</option>
-                        <option value="moving">🚛 Транспорт / Хамали</option>
-                    </select>
-                </div>
-                <input type="text" id="clientName" placeholder="Име на клиент / Фирма" oninput="update()" class="w-full bg-black/40 border border-white/10 p-3 rounded-xl text-sm">
-                <input type="text" id="clientAddr" placeholder="Адрес на обект / Дестинация" oninput="update()" class="w-full bg-black/40 border border-white/10 p-3 rounded-xl text-sm">
+            <input type="text" id="clientName" placeholder="Име на клиент" oninput="update()" class="input-dark">
+            <input type="text" id="clientAddr" placeholder="Адрес / Обект" oninput="update()" class="input-dark">
+            
+            <div id="itemsList" class="space-y-2 border-t border-white/10 pt-4">
+                <!-- Редове -->
             </div>
+            <button onclick="addItem()" class="w-full py-2 border border-dashed border-white/20 rounded-lg text-[10px] hover:bg-white/5">+ ДОБАВИ ПОЗИЦИЯ</button>
 
-            <div class="glass p-6 space-y-4">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-green-400 font-bold text-xs uppercase tracking-widest">2. Позиции в Мисията</h3>
-                    <button onclick="addItem()" class="text-[10px] bg-green-500/10 text-green-400 px-3 py-1 rounded-full border border-green-500/20">+ Добави</button>
-                </div>
-                <div id="itemsList" class="space-y-3">
-                    <!-- Редовете се генерират тук -->
-                </div>
-                <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl text-xs">
-                    <span>Начисли 20% ДДС</span>
-                    <input type="checkbox" id="vatToggle" onchange="update()" class="w-5 h-5 accent-green-400">
-                </div>
+            <textarea id="terms" oninput="update()" placeholder="Гаранция и Условия..." class="input-dark h-20"></textarea>
+            
+            <div class="flex items-center justify-between text-[10px] uppercase font-bold">
+                <span>Включи ДДС (20%)</span>
+                <input type="checkbox" id="vatToggle" onchange="update()" class="w-4 h-4 accent-green-400">
             </div>
-
-            <div class="glass p-6 space-y-4">
-                <h3 class="text-purple-400 font-bold text-xs uppercase tracking-widest">3. Nebula AI Simulator 🧠</h3>
-                <div id="nebulaDisplay" class="text-[11px] text-gray-400 italic leading-relaxed min-h-[40px]">Натисни бутона, за да тренираш за възражения...</div>
-                <button onclick="runNebula()" class="w-full border border-purple-500/30 text-purple-400 py-2 rounded-xl text-[10px] font-bold uppercase hover:bg-purple-500/10">Старт на симулация</button>
-            </div>
-
-            <div class="glass p-6">
-                <h3 class="text-xs font-bold uppercase mb-4 text-gray-500">4. Избор на Визуализация</h3>
-                <div class="grid grid-cols-3 gap-2">
-                    <button onclick="setTheme('cosmos')" class="bg-black p-2 rounded border border-white/10 text-[9px] hover:border-green-400">COSMOS</button>
-                    <button onclick="setTheme('architect')" class="bg-black p-2 rounded border border-white/10 text-[9px] hover:border-blue-500">ARCHITECT</button>
-                    <button onclick="setTheme('classic')" class="bg-black p-2 rounded border border-white/10 text-[9px] hover:border-yellow-600">CLASSIC</button>
-                </div>
-            </div>
-
-            <div class="glass p-6">
-                <div class="flex justify-between mb-2">
-                    <span class="text-[10px] font-bold text-gray-500 uppercase font-bold tracking-widest">DealScore™</span>
-                    <span id="scoreStatus" class="text-[10px] font-bold text-red-500">СЛАБО</span>
-                </div>
-                <div class="fuel-bar"><div id="fuelFill" class="fuel-fill bg-red-600"></div></div>
-            </div>
-
-            <button onclick="exportPDF()" class="w-full bg-green-500 text-black font-black py-5 rounded-2xl shadow-lg uppercase italic tracking-tighter transition hover:scale-[1.02]">Изстреляй PDF 🛰️</button>
         </div>
 
-        <!-- ДЯСНО: PREVIEW -->
-        <div class="lg:col-span-7" id="pdf-preview-container">
-            <div id="pdf-area" class="theme-cosmos">
-                <div class="flex justify-between items-start mb-12">
-                    <div>
-                        <h1 id="outDocTitle" class="text-5xl font-black tracking-tighter mb-1">ОФЕРТА</h1>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest" id="outDate"></p>
-                    </div>
-                    <img id="outLogo" src="" class="h-20 w-auto hidden">
-                    <div id="outLogoPlaceholder" class="w-20 h-20 bg-gray-50 border-2 border-dashed flex items-center justify-center text-[10px] text-gray-300 font-bold">LOGO</div>
+        <!-- NEBULA AI -->
+        <div class="glass p-6 bg-purple-500/5 border-purple-500/20">
+            <h3 class="text-purple-400 text-[10px] font-black uppercase mb-2">Nebula AI: Скрипт за затваряне</h3>
+            <div id="nebulaResult" class="text-[11px] text-gray-400 italic">Попълни офертата и тренирай...</div>
+            <button onclick="runNebula()" class="w-full mt-3 py-2 bg-purple-500/20 border border-purple-500/40 rounded-lg text-purple-400 text-[10px] font-bold uppercase">Симулирай възражение</button>
+        </div>
+
+        <button onclick="exportPDF()" class="w-full bg-green-500 text-black font-black py-4 rounded-xl uppercase shadow-lg shadow-green-500/20">ИЗТЕГЛИ ОФЕРТА 🛰️</button>
+    </div>
+
+    <!-- ПРЕГЛЕД -->
+    <div class="lg:w-2/3" id="pdf-preview-wrap">
+        <div id="pdf-area" class="theme-zenith">
+            <div class="flex justify-between items-start mb-12">
+                <div>
+                    <div class="accent-line"></div>
+                    <h1 id="outTitle">ОФЕРТА</h1>
+                    <p class="text-[10px] text-gray-400 uppercase font-bold tracking-widest mt-2" id="outDate"></p>
                 </div>
+                <img id="outLogo" src="" class="h-16 w-auto">
+            </div>
 
-                <div class="grid grid-cols-2 gap-12 mb-12 text-xs">
-                    <div>
-                        <p class="text-[10px] font-black text-gray-400 uppercase border-b border-gray-100 pb-1 mb-2">Изпълнител</p>
-                        <p id="outMyName" class="font-bold text-lg text-gray-900"></p>
-                        <p id="outMyID" class="text-gray-500"></p>
-                        <p id="outMyPhone" class="text-gray-500"></p>
-                        <p id="outMyIBAN" class="text-gray-500"></p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] font-black text-gray-400 uppercase border-b border-gray-100 pb-1 mb-2">Получател</p>
-                        <p id="outClientName" class="font-bold text-lg text-gray-900 italic">Уважаеми Клиент</p>
-                        <p id="outClientAddr" class="text-gray-500 italic"></p>
-                    </div>
+            <div class="grid grid-cols-2 gap-10 mb-12 text-[11px]">
+                <div>
+                    <p class="text-gray-400 uppercase font-bold mb-2">Изпълнител</p>
+                    <p id="pName" class="font-bold text-lg mb-1"></p>
+                    <p id="pID" class="text-gray-500"></p>
+                    <p id="pPhone" class="text-gray-500"></p>
+                    <p id="pIBAN" class="text-gray-600 font-mono mt-2"></p>
                 </div>
-
-                <table class="w-full mb-10">
-                    <thead class="text-[10px] uppercase">
-                        <tr>
-                            <th class="p-4 text-left" id="th-desc">Описание</th>
-                            <th class="p-4 text-center" id="th-qty">Количество</th>
-                            <th class="p-4 text-right" id="th-price">Сума</th>
-                        </tr>
-                    </thead>
-                    <tbody id="outRows" class="text-sm">
-                        <!-- Редовете се пълнят динамично -->
-                    </tbody>
-                </table>
-
-                <div class="flex justify-end mb-16">
-                    <div class="w-64 space-y-2 border-t-2 border-gray-900 pt-4">
-                        <div class="flex justify-between text-xs"><span>Междинна сума:</span> <span id="outSubtotal">0.00 €</span></div>
-                        <div class="flex justify-between text-xs text-gray-400"><span>ДДС (20%):</span> <span id="outVAT">0.00 €</span></div>
-                        <div class="flex justify-between text-2xl font-black pt-2 border-t-4 border-gray-900">
-                            <span>ОБЩО:</span> <span id="outGrandTotal">0.00 €</span>
-                        </div>
-                    </div>
+                <div class="text-right">
+                    <p class="text-gray-400 uppercase font-bold mb-2">Получател</p>
+                    <p id="outClient" class="font-bold text-lg italic"></p>
+                    <p id="outAddr" class="text-gray-500"></p>
                 </div>
+            </div>
 
-                <div class="p-6 bg-gray-50 border-l-8 border-gray-900 italic text-xs leading-relaxed">
-                    <p class="font-black uppercase text-[9px] mb-2 text-gray-400">Допълнителни условия и Гаранции:</p>
-                    <p id="outTerms">Валидност на офертата: 7 дни. Изпълнение съгласно договорените срокове.</p>
-                </div>
+            <table class="w-full mb-10 text-sm">
+                <thead>
+                    <tr>
+                        <th class="text-left">Описание</th>
+                        <th class="text-center">Количество</th>
+                        <th class="text-right">Общо</th>
+                    </tr>
+                </thead>
+                <tbody id="pRows"></tbody>
+            </table>
 
-                <div class="mt-20 flex justify-between items-end border-t pt-8">
-                    <div class="text-center">
-                        <div class="w-32 border-b border-gray-400 mb-2"></div>
-                        <p class="text-[8px] font-bold uppercase text-gray-400 tracking-widest">Изпълнител</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="w-32 border-b border-gray-400 mb-2"></div>
-                        <p class="text-[8px] font-bold uppercase text-gray-400 tracking-widest">Клиент</p>
+            <div class="flex justify-end mb-16">
+                <div class="w-1/2 space-y-2 border-t-2 border-black pt-4">
+                    <div class="flex justify-between text-xs"><span>Междинна сума:</span> <span id="outSub">0 €</span></div>
+                    <div id="vatRow" class="flex justify-between text-xs text-gray-400 hidden"><span>ДДС (20%):</span> <span id="outVat">0 €</span></div>
+                    <div class="flex justify-between text-2xl font-black pt-2 border-t border-gray-100">
+                        <span>ОБЩО:</span> <span id="outTotal">0 €</span>
                     </div>
                 </div>
+            </div>
+
+            <div class="p-8 bg-gray-50 border-l-4 border-black text-[11px]">
+                <p class="font-black uppercase mb-2 tracking-widest text-gray-400">Гаранция и Условия</p>
+                <p id="outTerms" class="leading-relaxed italic">Валидност: 7 дни. Гаранционен срок съгласно договора.</p>
             </div>
         </div>
     </div>
 
     <script>
-        const userData = JSON.parse(localStorage.getItem('dr_user'));
-        if(!userData) window.location.href = "index.html";
+        const user = JSON.parse(localStorage.getItem('dr_user'));
+        const logoHidden = localStorage.getItem('dr_logo_hidden') === 'true';
+        let items = [{ desc: "Основна услуга", qty: 1, price: 0 }];
 
-        let items = [{ desc: "", qty: 1, price: 0 }];
-        const objections = [
-            "Скъпо е, съседът ще го направи за половината пари.", "Нямам бюджет в момента, дай ми отстъпка.", 
-            "Защо трябва да плащам аванс?", "Другата фирма ми дава 5 години гаранция, вие само 2.",
-            "Може ли да започнете утре?", "Материалите ми се виждат некачествени.",
-            "Няма ли да стане по-бързо?", "Ще ми издадете ли фактура?",
-            "Може ли да платя след 3 месеца?", "Как да съм сигурен, че ще почистите?",
-            "Има ли скрити такси?", "Защо трудът е толкова скъп?", 
-            "Може ли с мои материали?", "Ако не ми хареса, връщате ли парите?"
+        const nebulaData = [
+            { q: "Скъпо е, намерих по-евтино.", a: "Разбирам. Нашата цена включва премиум материали и 24м гаранция, които ви спестяват пари в дългосрочен план." },
+            { q: "Може ли отстъпка за плащане в брой?", a: "Цената е оптимизирана за максимално качество. Можем да обсъдим малка отстъпка само при 100% авансово плащане." },
+            { q: "Другите започват още утре.", a: "Бързата работа често е за сметка на качеството. Ние планираме прецизно, за да нямате проблеми след година." }
         ];
-
-        const nicheConfigs = {
-            laminate: { label: "Площ (кв.м)", multiplier: 1.1, unit: "кв.м", defaultDesc: "Монтаж на настилка (+10% фира)" },
-            influencer: { label: "Брой постове", multiplier: 1, unit: "бр.", defaultDesc: "Рекламна кампания" },
-            legal: { label: "Часове", multiplier: 1, unit: "ч.", defaultDesc: "Правни услуги" },
-            it: { label: "Спринтове", multiplier: 1, unit: "ед.", defaultDesc: "Софтуерна разработка" },
-            hvac: { label: "Системи", multiplier: 1, unit: "бр.", defaultDesc: "Монтаж на климатизация" },
-            moving: { label: "Курсове/КМ", multiplier: 1, unit: "км", defaultDesc: "Транспортна услуга" }
-        };
-
-        function updateNiche() {
-            const n = document.getElementById('niche').value;
-            document.getElementById('th-qty').innerText = nicheConfigs[n].label;
-            if(items.length === 1 && items[0].desc === "") items[0].desc = nicheConfigs[n].defaultDesc;
-            renderItems();
-            update();
-        }
 
         function addItem() {
             items.push({ desc: "", qty: 1, price: 0 });
-            renderItems();
+            renderInputs();
             update();
         }
 
-        function removeItem(idx) {
-            items.splice(idx, 1);
-            renderItems();
-            update();
-        }
-
-        function renderItems() {
+        function renderInputs() {
             const container = document.getElementById('itemsList');
             container.innerHTML = items.map((item, idx) => `
-                <div class="bg-black/20 p-4 rounded-xl space-y-3 relative border border-white/5">
-                    <button onclick="removeItem(${idx})" class="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-xs">✕</button>
-                    <input type="text" value="${item.desc}" placeholder="Описание на услугата" oninput="items[${idx}].desc=this.value; update()" class="w-full bg-transparent border-b border-white/10 text-xs focus:outline-none focus:border-green-400">
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="number" value="${item.qty}" placeholder="К-во" oninput="items[${idx}].qty=this.value; update()" class="bg-black/40 p-2 rounded text-xs border border-white/5">
-                        <input type="number" value="${item.price}" placeholder="Цена €" oninput="items[${idx}].price=this.value; update()" class="bg-black/40 p-2 rounded text-xs border border-white/5">
-                    </div>
+                <div class="flex gap-2 mb-2">
+                    <input type="text" value="${item.desc}" oninput="items[${idx}].desc=this.value; update()" class="input-dark flex-grow" placeholder="Услуга">
+                    <input type="number" value="${item.qty}" oninput="items[${idx}].qty=this.value; update()" class="input-dark w-12 text-center">
+                    <input type="number" value="${item.price}" oninput="items[${idx}].price=this.value; update()" class="input-dark w-16 text-right">
                 </div>
             `).join('');
         }
 
         function update() {
-            const n = document.getElementById('niche').value;
-            const config = nicheConfigs[n];
-            const isVat = document.getElementById('vatToggle').checked;
-            
-            // Преглед в PDF
-            document.getElementById('outDocTitle').innerText = document.getElementById('docType').value;
-            document.getElementById('outClientName').innerText = document.getElementById('clientName').value || "Уважаеми Клиент";
-            document.getElementById('outClientAddr').innerText = document.getElementById('clientAddr').value;
+            document.getElementById('outClient').innerText = document.getElementById('clientName').value || "УВАЖАЕМИ КЛИЕНТ";
+            document.getElementById('outAddr').innerText = document.getElementById('clientAddr').value;
+            document.getElementById('outTerms').innerText = document.getElementById('terms').value || "Валидност: 7 дни. Гаранционен срок съгласно договора.";
 
-            let subtotal = 0;
-            const rowsHtml = items.map(item => {
-                let q = parseFloat(item.qty) || 0;
-                if(n === 'laminate') q *= config.multiplier;
-                const total = q * (parseFloat(item.price) || 0);
-                subtotal += total;
-                return `<tr class="border-b border-gray-100"><td class="p-4 font-bold">${item.desc}</td><td class="p-4 text-center">${q.toFixed(2)} ${config.unit}</td><td class="p-4 text-right">${total.toFixed(2)} €</td></tr>`;
+            let sub = 0;
+            const rows = items.map(i => {
+                const total = i.qty * i.price;
+                sub += total;
+                return `<tr class="border-b border-gray-50"><td class="py-4 font-bold">${i.desc}</td><td class="py-4 text-center">${i.qty}</td><td class="py-4 text-right">${total.toFixed(2)} €</td></tr>`;
             }).join('');
 
-            const vat = isVat ? subtotal * 0.2 : 0;
-            const grandTotal = subtotal + vat;
-
-            document.getElementById('outRows').innerHTML = rowsHtml;
-            document.getElementById('outSubtotal').innerText = subtotal.toFixed(2) + " €";
-            document.getElementById('outVAT').innerText = vat.toFixed(2) + " €";
-            document.getElementById('outGrandTotal').innerText = grandTotal.toFixed(2) + " €";
-
-            updateScore(subtotal, items);
-        }
-
-        function updateScore(total, items) {
-            let score = 0;
-            if (total > 0) score += 30;
-            if (items.length > 2) score += 30;
-            if (document.getElementById('vatToggle').checked) score += 20;
-            if (document.getElementById('clientName').value.length > 3) score += 20;
-
-            const fuel = document.getElementById('fuelFill');
-            const status = document.getElementById('scoreStatus');
-            fuel.style.width = score + "%";
-            
-            if(score < 50) { status.innerText = "СЛАБО ГОРИВО 🦴"; fuel.className = "fuel-fill bg-red-600"; }
-            else if(score < 100) { status.innerText = "СТАБИЛНА ТРАЕКТОРИЯ 💪"; fuel.className = "fuel-fill bg-yellow-500"; }
-            else { status.innerText = "УБИЙСТВЕНА ОФЕРТА 🔥"; fuel.className = "fuel-fill bg-green-500 shadow-lg shadow-green-500/50"; }
-        }
-
-        function runNebula() {
-            const display = document.getElementById('nebulaDisplay');
-            display.innerText = "Анализирам психологията на клиента... 🛸";
-            setTimeout(() => {
-                const randomObj = objections[Math.floor(Math.random() * objections.length)];
-                display.innerHTML = `<span class="text-purple-400 font-bold">AI КЛИЕНТ:</span> "${randomObj}"`;
-            }, 1000);
+            const isVat = document.getElementById('vatToggle').checked;
+            const vat = isVat ? sub * 0.2 : 0;
+            document.getElementById('pRows').innerHTML = rows;
+            document.getElementById('outSub').innerText = sub.toFixed(2) + " €";
+            document.getElementById('outVat').innerText = vat.toFixed(2) + " €";
+            document.getElementById('outTotal').innerText = (sub + vat).toFixed(2) + " €";
+            document.getElementById('vatRow').classList.toggle('hidden', !isVat);
         }
 
         function setTheme(t) {
             document.getElementById('pdf-area').className = "theme-" + t;
         }
 
+        function runNebula() {
+            const res = document.getElementById('nebulaResult');
+            res.innerText = "Анализирам психологията на клиента...";
+            setTimeout(() => {
+                const data = nebulaData[Math.floor(Math.random() * nebulaData.length)];
+                res.innerHTML = `<p class="text-purple-400 font-bold">КЛИЕНТЪТ КАЗВА: "${data.q}"</p>
+                                 <p class="text-white mt-2 font-bold uppercase text-[9px]">ТВОЯТ ОТГОВОР:</p>
+                                 <p class="text-green-400">"${data.a}"</p>`;
+            }, 800);
+        }
+
         function exportPDF() {
-            const element = document.getElementById('pdf-area');
-            html2pdf().from(element).set({
-                margin: 0,
-                filename: 'DealRocket_Offer.pdf',
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-            }).save();
+            const el = document.getElementById('pdf-area');
+            html2pdf().from(el).set({ margin:0, filename:'Offer.pdf', html2canvas:{scale:3} }).save();
         }
 
-        // Попълване от профила
-        document.getElementById('outMyName').innerText = userData.name.toUpperCase();
-        document.getElementById('outMyID').innerText = userData.type === 'Company' ? "ЕИК: " + userData.reg : "Професионални услуги";
-        document.getElementById('outMyPhone').innerText = userData.phone || "";
-        document.getElementById('outMyIBAN').innerText = userData.iban || "";
+        // Init
+        document.getElementById('pName').innerText = user.name;
+        document.getElementById('pID').innerText = user.reg ? "ЕИК: " + user.reg : "Професионални услуги";
+        document.getElementById('pPhone').innerText = user.phone || "";
+        document.getElementById('pIBAN').innerText = user.iban || "";
         document.getElementById('outDate').innerText = new Date().toLocaleDateString('bg-BG');
-        if(userData.logo) {
-            document.getElementById('outLogo').src = userData.logo;
-            document.getElementById('outLogo').classList.remove('hidden');
-            document.getElementById('outLogoPlaceholder').classList.add('hidden');
+        
+        if (user.logo && !logoHidden) {
+            document.getElementById('outLogo').src = user.logo;
+        } else {
+            document.getElementById('outLogo').classList.add('hidden');
         }
 
-        updateNiche();
+        renderInputs();
+        update();
     </script>
 </body>
 </html>
