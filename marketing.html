@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signal Boost | DealRocket 📸</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Библиотека за QR кодове -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --neon-purple: #bc13fe; --bg: #05070a; }
+        body { background: var(--bg); color: white; font-family: 'Montserrat', sans-serif; background-image: radial-gradient(circle at 0% 100%, #2e1065 0%, #05070a 100%); min-height: 100vh; }
+        .space-font { font-family: 'Orbitron', sans-serif; }
+        .neon-purple-text { color: var(--neon-purple); text-shadow: 0 0 15px var(--neon-purple); }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; }
+        .input-dark { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 12px; width: 100%; color: white; font-size: 0.9rem; }
+        
+        /* КАРТИЧКА PREVIEW */
+        #marketing-card { 
+            background: linear-gradient(135deg, #0f172a 0%, #05070a 100%); 
+            color: white; width: 500px; height: 700px; padding: 40px; 
+            margin: auto; border: 4px solid var(--neon-purple); 
+            border-radius: 30px; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            box-shadow: 0 0 50px rgba(188, 19, 254, 0.3);
+            transform: scale(0.7); transform-origin: top center;
+        }
+        .qr-container { background: white; padding: 15px; border-radius: 20px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <header class="max-w-7xl mx-auto flex justify-between items-center mb-10">
+        <div class="space-font text-xl neon-purple-text italic cursor-pointer" onclick="window.location.href='dashboard.html'">DEALROCKET 🚀</div>
+        <div class="text-[10px] text-purple-400 uppercase tracking-widest font-bold border border-purple-500/30 px-3 py-1 rounded-full">Модул "Signal Boost" 📸</div>
+    </header>
+
+    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- ЛЯВО: НАСТРОЙКИ -->
+        <div class="lg:col-span-5 space-y-6">
+            <div class="glass p-8 space-y-6">
+                <h2 class="space-font text-purple-400 text-sm tracking-widest uppercase">Увеличи Сигнала</h2>
+                
+                <div>
+                    <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Линк за Google Review</label>
+                    <input type="text" id="googleLink" oninput="generateQRs()" class="input-dark mt-1" placeholder="Постави линк към твоя Google Business...">
+                </div>
+
+                <div>
+                    <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Линк за Плащане (Revolut / PayPal)</label>
+                    <input type="text" id="payLink" oninput="generateQRs()" class="input-dark mt-1" placeholder="revolut.me/tvoeto-ime...">
+                </div>
+
+                <div>
+                    <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Послание към клиента</label>
+                    <textarea id="message" oninput="updateText()" class="input-dark h-24 mt-1" placeholder="Напр: Благодарим ти, че ни избра! Твоето мнение е важно за нас."></textarea>
+                </div>
+            </div>
+
+            <button onclick="exportCard()" class="w-full bg-purple-600 text-white font-black py-5 rounded-2xl shadow-lg uppercase tracking-widest transition hover:scale-[1.02] hover:bg-purple-500">Изтегли Карта за Клиента 🛰️</button>
+            <p class="text-[10px] text-gray-500 italic text-center">Изпрати тази картинка на клиента по Viber веднага след работа.</p>
+        </div>
+
+        <!-- ДЯСНО: PREVIEW -->
+        <div class="lg:col-span-7 overflow-hidden">
+            <div id="marketing-card">
+                <!-- Декорация -->
+                <div class="absolute top-[-50px] right-[-50px] w-32 h-32 bg-purple-600/20 rounded-full blur-3xl"></div>
+                
+                <div class="text-center">
+                    <div class="space-font text-2xl neon-purple-text mb-2 italic">DEALROCKET</div>
+                    <p id="outMyName" class="text-xs uppercase tracking-[0.3em] font-bold text-gray-400">ТВОЯТА ФИРМА</p>
+                </div>
+
+                <div class="text-center space-y-4">
+                    <h1 class="text-4xl font-black italic tracking-tighter leading-tight">МИСИЯТА Е <br><span class="text-purple-500 uppercase">УСПЕШНА!</span></h1>
+                    <p id="outMessage" class="text-sm text-gray-300 italic px-6">Благодарим ти, че ни се довери! Твоето мнение е нашето гориво за следващата мисия.</p>
+                </div>
+
+                <!-- QR ЗОНА -->
+                <div class="grid grid-cols-2 gap-8 w-full px-4">
+                    <div class="flex flex-col items-center">
+                        <div id="qrcode-review" class="qr-container"></div>
+                        <p class="text-[10px] font-bold mt-3 uppercase tracking-widest text-purple-400">Остави Ревю 🌟</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div id="qrcode-pay" class="qr-container"></div>
+                        <p class="text-[10px] font-bold mt-3 uppercase tracking-widest text-green-400">Плати Бързо 💸</p>
+                    </div>
+                </div>
+
+                <div class="text-center border-t border-white/10 pt-6 w-full">
+                    <p class="text-[9px] text-gray-500 uppercase tracking-widest">Генерирано чрез DealRocket.bg 🚀</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const userData = JSON.parse(localStorage.getItem('dr_user'));
+        if(!userData) window.location.href = "index.html";
+
+        // Обекти за QR кодовете
+        const qrReview = new QRCode(document.getElementById("qrcode-review"), { width: 120, height: 120 });
+        const qrPay = new QRCode(document.getElementById("qrcode-pay"), { width: 120, height: 120 });
+
+        function generateQRs() {
+            const google = document.getElementById('googleLink').value || "https://google.com";
+            const pay = document.getElementById('payLink').value || "https://revolut.me";
+            
+            qrReview.makeCode(google);
+            qrPay.makeCode(pay);
+        }
+
+        function updateText() {
+            document.getElementById('outMessage').innerText = document.getElementById('message').value || "Благодарим ти, че ни се довери!";
+        }
+
+        function exportCard() {
+            const element = document.getElementById('marketing-card');
+            // Махаме мащабирането за финалния PDF
+            element.style.transform = "scale(1)";
+            
+            html2pdf().from(element).set({
+                margin: 0,
+                filename: 'DealRocket_SignalBoost.pdf',
+                html2canvas: { scale: 3 }, // Високо качество
+                jsPDF: { unit: 'px', format: [500, 700], orientation: 'portrait' }
+            }).save().then(() => {
+                element.style.transform = "scale(0.7)"; // Връщаме мащаба за екрана
+            });
+        }
+
+        // Init
+        document.getElementById('outMyName').innerText = userData.name.toUpperCase();
+        generateQRs();
+        updateText();
+    </script>
+</body>
+</html>
