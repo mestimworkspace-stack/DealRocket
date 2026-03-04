@@ -133,11 +133,96 @@
             // Добави останалите тук...
         };
 
-        function updateNiche() {
-            const n = document.getElementById('niche').value;
-            document.getElementById('qtyLabel').innerText = niches[n].label;
-            calculate();
-        }
+        const niches = {
+    laminate: { 
+        qtyLabel: "Площ (кв.м)", 
+        priceLabel: "Цена за кв.м", 
+        multiplier: 1.1, 
+        desc: "Полагане на настилка (вкл. 10% фира)",
+        unit: "кв.м"
+    },
+    influencer: { 
+        qtyLabel: "Брой видеа/постове", 
+        priceLabel: "Хонорар за брой", 
+        multiplier: 1, 
+        desc: "Креативна кампания и авторски права",
+        unit: "бр."
+    },
+    legal: { 
+        qtyLabel: "Работни часове", 
+        priceLabel: "Часова ставка", 
+        multiplier: 1, 
+        desc: "Правна консултация и изготвяне на документи",
+        unit: "ч."
+    },
+    detailing: { 
+        qtyLabel: "Брой автомобили", 
+        priceLabel: "Цена за пакет", 
+        multiplier: 1, 
+        desc: "Пълен детайлинг пакет (Керамика & Полиране)",
+        unit: "бр."
+    },
+    it: { 
+        qtyLabel: "Работни дни / Спринтове", 
+        priceLabel: "Цена за единица", 
+        multiplier: 1, 
+        desc: "Софтуерна разработка и поддръжка",
+        unit: "ед."
+    }
+};
+
+function updateNiche() {
+    const n = document.getElementById('niche').value;
+    const config = niches[n];
+    
+    // Динамична смяна на етикетите в интерфейса
+    document.getElementById('qtyLabel').innerText = config.qtyLabel;
+    document.getElementById('qty').placeholder = config.qtyLabel;
+    
+    // Сменяме името на цената според бизнеса
+    const priceLabels = document.querySelectorAll('label'); // Намираме етикета за цена
+    priceLabels[2].innerText = config.priceLabel + " (€)"; 
+    
+    calculate();
+}
+
+function calculate() {
+    const n = document.getElementById('niche').value;
+    const config = niches[n];
+    
+    let q = parseFloat(document.getElementById('qty').value) || 0;
+    const p = parseFloat(document.getElementById('price').value) || 0;
+    const isVat = document.getElementById('vat').checked;
+    const b = document.getElementById('bonus').value;
+
+    // Прилагаме специфичната логика (например фирата за ламинат)
+    if (config.multiplier > 1) {
+        q = q * config.multiplier;
+    }
+
+    const sub = q * p;
+    const vatVal = isVat ? sub * 0.2 : 0;
+    const total = sub + vatVal;
+
+    // Обновяваме PDF прегледа с правилните термини
+    document.getElementById('pRows').innerHTML = `
+        <tr class="border-b border-gray-100">
+            <td class="py-6 font-bold text-gray-800">
+                ${config.desc}
+                <div class="text-[10px] text-gray-400 font-normal uppercase mt-1">Категория: ${config.qtyLabel}</div>
+            </td>
+            <td class="py-6 text-center">${q.toFixed(2)} ${config.unit}</td>
+            <td class="py-6 text-right font-black">${sub.toFixed(2)} €</td>
+        </tr>
+    `;
+
+    document.getElementById('pSub').innerText = sub.toFixed(2) + " €";
+    document.getElementById('pVat').innerText = vatVal.toFixed(2) + " €";
+    document.getElementById('pTotal').innerText = total.toFixed(2) + " €";
+    document.getElementById('pBonus').innerText = b || "Няма добавени бонуси.";
+
+    updateScore(q, p, b, isVat);
+}
 
         function calculate() {
             const n = document.getElementById('niche').value;
