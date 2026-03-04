@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8"><title>Mothership Control | Admin 🛸</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { background: #05070a; color: white; font-family: 'Montserrat', sans-serif; }
+        .neon-purple { color: #bc13fe; text-shadow: 0 0 10px #bc13fe; }
+        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-7xl mx-auto">
+        <h1 class="space-font text-3xl neon-purple mb-10 italic uppercase">Mothership Control 🛸</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="glass p-6 text-center">
+                <p class="text-xs text-gray-500 uppercase">Екипаж</p>
+                <p id="totalUsers" class="text-4xl font-black">0</p>
+            </div>
+            <div class="glass p-6 text-center">
+                <p class="text-xs text-gray-500 uppercase">Изстреляни Оферти</p>
+                <p id="totalOffers" class="text-4xl font-black text-green-400">0</p>
+            </div>
+            <div class="glass p-6 text-center">
+                <p class="text-xs text-gray-500 uppercase">Чек-листи</p>
+                <p id="totalChecks" class="text-4xl font-black text-blue-400">0</p>
+            </div>
+        </div>
+
+        <div class="glass p-8 overflow-x-auto">
+            <h2 class="text-sm font-bold mb-6 uppercase tracking-widest">Управление на Екипажа</h2>
+            <table class="w-full text-left text-xs">
+                <thead>
+                    <tr class="text-gray-500 border-b border-white/5 uppercase">
+                        <th class="pb-4">Пилот (Email)</th>
+                        <th class="pb-4">Име/Фирма</th>
+                        <th class="pb-4">Последна активност</th>
+                        <th class="pb-4">Статус</th>
+                        <th class="pb-4 text-right">Действие</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <!-- Зареждат се динамично -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "ТУК_ТВОЯ_URL";
+        const adminEmail = JSON.parse(localStorage.getItem('dr_user')).email;
+
+        async function loadAdminData() {
+            // Stats
+            const resStats = await fetch(API_URL, { method: 'POST', body: JSON.stringify({action: 'getAdminStats'}) });
+            const stats = await resStats.json();
+            document.getElementById('totalUsers').innerText = stats.totalUsers;
+            document.getElementById('totalOffers').innerText = stats.totalOffers;
+            document.getElementById('totalChecks').innerText = stats.totalChecks;
+
+            // Users List
+            const resUsers = await fetch(API_URL, { method: 'POST', body: JSON.stringify({action: 'getAllUsers', adminEmail: adminEmail}) });
+            const data = await resUsers.json();
+            
+            const table = document.getElementById('userTableBody');
+            table.innerHTML = data.users.map(u => {
+                const lastActive = new Date(u.LastActivity);
+                const diffDays = Math.floor((new Date() - lastActive) / (1000 * 60 * 60 * 24));
+                const statusColor = diffDays > 60 ? 'text-red-500' : (diffDays > 30 ? 'text-yellow-500' : 'text-green-500');
+
+                return `
+                    <tr class="border-b border-white/5">
+                        <td class="py-4">${u.Email}</td>
+                        <td class="py-4 font-bold">${u.DisplayName}</td>
+                        <td class="py-4 ${statusColor}">${diffDays} дни назад</td>
+                        <td class="py-4">${u.SubStatus}</td>
+                        <td class="py-4 text-right">
+                            <button onclick="ejectUser(${u.rowId})" class="bg-red-500/10 text-red-500 px-3 py-1 rounded border border-red-500/20 hover:bg-red-500 hover:text-white">EJECT 🚀</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function ejectUser(rowId) {
+            if(!confirm("Сигурен ли си, че искаш да изхвърлиш този пилот от системата?")) return;
+            await fetch(API_URL, { method: 'POST', body: JSON.stringify({action: 'deleteUser', rowId: rowId}) });
+            loadAdminData();
+        }
+
+        loadAdminData();
+    </script>
+</body>
+</html>
