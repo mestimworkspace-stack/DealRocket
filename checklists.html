@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Checklist | DealRocket 📋</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --neon-cyan: #00f2ff; --bg: #05070a; }
+        body { background: var(--bg); color: white; font-family: 'Montserrat', sans-serif; background-image: radial-gradient(circle at 50% 50%, #082f49 0%, #05070a 100%); min-height: 100vh; }
+        .space-font { font-family: 'Orbitron', sans-serif; }
+        .neon-cyan-text { color: var(--neon-cyan); text-shadow: 0 0 15px var(--neon-cyan); }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; }
+        .check-item { transition: 0.3s; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); }
+        .check-item:hover { border-color: var(--neon-cyan); background: rgba(0, 242, 255, 0.05); }
+        .hidden { display: none; }
+        input[type="checkbox"] { width: 25px; height: 25px; accent-color: var(--neon-cyan); }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <header class="max-w-4xl mx-auto flex justify-between items-center mb-10">
+        <div class="space-font text-xl neon-cyan-text italic cursor-pointer" onclick="window.location.href='dashboard.html'">DEALROCKET 🚀</div>
+        <div id="badge" class="text-[10px] text-cyan-400 uppercase tracking-widest font-bold border border-cyan-500/30 px-3 py-1 rounded-full">Cosmic Checklist 📋</div>
+    </header>
+
+    <main class="max-w-2xl mx-auto">
+        
+        <!-- РЕЖИМ: СЪЗДАВАНЕ (За Потребителя) -->
+        <div id="userMode" class="space-y-6">
+            <div class="glass p-8 space-y-6">
+                <h2 class="space-font text-cyan-400 text-sm tracking-widest uppercase">Създай нов Чек-лист</h2>
+                <input type="text" id="clientName" placeholder="Име на клиент / Обект" class="w-full bg-black/40 border border-white/10 p-4 rounded-xl text-white outline-none focus:border-cyan-400">
+                
+                <div class="space-y-3">
+                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Задачи за клиента:</p>
+                    <div id="itemsList" class="space-y-2">
+                        <input type="text" class="item-input w-full bg-black/20 border border-white/5 p-3 rounded-lg text-sm" value="Осигурен достъп до обекта">
+                        <input type="text" class="item-input w-full bg-black/20 border border-white/5 p-3 rounded-lg text-sm" value="Преместени мебели от работната зона">
+                        <input type="text" class="item-input w-full bg-black/20 border border-white/5 p-3 rounded-lg text-sm" value="Осигурено електричество и вода">
+                    </div>
+                    <button onclick="addNewInput()" class="text-xs text-cyan-400 hover:underline">+ Добави точка</button>
+                </div>
+
+                <button onclick="generateLink()" class="w-full bg-cyan-500 text-black font-black py-5 rounded-2xl shadow-lg uppercase tracking-widest transition hover:scale-[1.02]">Генерирай линк за клиента 🛰️</button>
+            </div>
+
+            <div id="resultBox" class="glass p-6 hidden">
+                <p class="text-xs text-gray-400 mb-2">Изпрати този линк на клиента:</p>
+                <div class="flex gap-2">
+                    <input type="text" id="shareLink" readonly class="flex-grow bg-black/60 p-3 rounded-lg text-[10px] text-cyan-300 border border-cyan-500/20">
+                    <button onclick="copyLink()" class="bg-white/10 px-4 rounded-lg text-xs font-bold uppercase">Копирай</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- РЕЖИМ: ПОПЪЛВАНЕ (За Клиента) -->
+        <div id="clientMode" class="hidden space-y-6">
+            <div class="glass p-8 text-center mb-6">
+                <h1 class="text-2xl font-black italic mb-2">ПОДГОТОВКА ЗА <span class="text-cyan-400">МИСИЯ</span></h1>
+                <p class="text-xs text-gray-400 italic" id="clientWelcome"></p>
+            </div>
+
+            <div id="checklistContainer" class="space-y-3">
+                <!-- Тук се зареждат точките -->
+            </div>
+
+            <button onclick="submitToMothership()" id="submitBtn" class="w-full bg-cyan-500 text-black font-black py-5 rounded-2xl shadow-lg uppercase tracking-widest mt-8">ИЗПРАТИ КЪМ БАЗАТА 🚀</button>
+            
+            <div id="thanksMsg" class="hidden glass p-10 text-center">
+                <div class="text-5xl mb-4">🛸</div>
+                <h2 class="text-xl font-bold neon-cyan-text mb-2">Данните са приети!</h2>
+                <p class="text-xs text-gray-400 leading-relaxed">Информацията е изпратена успешно. Можеш да затвориш този прозорец.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbzhckte9EXQX9OA5CLg5DkIGQVudFjlj8PypwLKvd880fPEn-Zr-bPWlUAvdCazRd1m8A/exec";
+        const urlParams = new URLSearchParams(window.location.search);
+        const checkID = urlParams.get('id');
+
+        // ИНИЦИАЛИЗАЦИЯ
+        if (checkID) {
+            startClientMode();
+        } else {
+            const userData = JSON.parse(localStorage.getItem('dr_user'));
+            if(!userData) window.location.href = "index.html";
+        }
+
+        // USER LOGIC
+        function addNewInput() {
+            const div = document.createElement('input');
+            div.className = "item-input w-full bg-black/20 border border-white/5 p-3 rounded-lg text-sm mt-2";
+            div.placeholder = "Нова точка...";
+            document.getElementById('itemsList').appendChild(div);
+        }
+
+        async function generateLink() {
+            const inputs = document.querySelectorAll('.item-input');
+            const items = Array.from(inputs).map(i => i.value).filter(v => v !== "");
+            const client = document.getElementById('clientName').value;
+            const userData = JSON.parse(localStorage.getItem('dr_user'));
+
+            const payload = {
+                action: "createChecklist",
+                email: userData.email,
+                clientName: client,
+                type: "Preparation",
+                items: items
+            };
+
+            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const result = await res.json();
+
+            if (result.result === 'success') {
+                const link = window.location.href.split('?')[0] + "?id=" + result.checkID;
+                document.getElementById('shareLink').value = link;
+                document.getElementById('resultBox').classList.remove('hidden');
+            }
+        }
+
+        function copyLink() {
+            const copyText = document.getElementById("shareLink");
+            copyText.select();
+            document.execCommand("copy");
+            alert("Линкът е копиран! Прати го по Viber.");
+        }
+
+        // CLIENT LOGIC
+        async function startClientMode() {
+            document.getElementById('userMode').classList.add('hidden');
+            document.getElementById('clientMode').classList.remove('hidden');
+            document.getElementById('badge').innerText = "Връзка с Базата...";
+
+            // Тук в истинска версия ще направим fetch да вземем задачите от ID-то
+            // За прототипа ще ползваме примерни данни (или ще ги заредим от URL)
+            const demoTasks = ["Осигурен достъп", "Мебели преместени", "Има ток/вода"];
+            const container = document.getElementById('checklistContainer');
+            
+            container.innerHTML = demoTasks.map((task, idx) => `
+                <div class="glass p-5 flex items-center gap-4 check-item" onclick="this.querySelector('input').click()">
+                    <input type="checkbox" id="check-${idx}">
+                    <span class="text-sm font-medium">${task}</span>
+                </div>
+            `).join('');
+        }
+
+        async function submitToMothership() {
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "ПРЕДАВАНЕ НА СИГНАЛА...";
+            
+            // Взимаме статуса на чекбоксите
+            const checks = document.querySelectorAll('input[type="checkbox"]');
+            const responses = Array.from(checks).map(c => c.checked);
+
+            const payload = {
+                action: "submitChecklist",
+                id: checkID,
+                responses: responses
+            };
+
+            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const result = await res.json();
+
+            if (result.result === 'success') {
+                document.getElementById('checklistContainer').classList.add('hidden');
+                btn.classList.add('hidden');
+                document.getElementById('thanksMsg').classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
