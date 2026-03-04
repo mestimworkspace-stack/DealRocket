@@ -1,81 +1,259 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-    <meta charset="UTF-8"><title>Dashboard | DealRocket</title>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Команден Център | DealRocket 🚀</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        body { background: #05070a; color: white; font-family: 'Montserrat', sans-serif; }
-        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; }
-        .neon { color: #00ff88; }
+        :root { --neon: #00ff88; --bg: #05070a; }
+        body { background: var(--bg); color: white; font-family: 'Montserrat', sans-serif; background-image: radial-gradient(circle at 0% 0%, #111827 0%, #05070a 100%); min-height: 100vh; }
+        .space-font { font-family: 'Orbitron', sans-serif; }
+        .neon-text { color: var(--neon); text-shadow: 0 0 10px var(--neon); }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; }
+        .nav-btn { padding: 12px 20px; border-radius: 12px; transition: 0.3s; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-btn:hover, .nav-btn.active { background: var(--neon); color: black; font-weight: bold; }
+        .input-dark { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; width: 100%; color: white; font-size: 0.9rem; }
         .hidden { display: none; }
+        /* Календар стилове */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+        .day-cell { aspect-ratio: 1; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; font-size: 0.8rem; transition: 0.2s; }
+        .day-cell:hover { background: var(--neon); color: black; }
+        .has-note { border-color: var(--neon); color: var(--neon); font-weight: bold; }
     </style>
 </head>
-<body class="p-8">
-    <div class="max-w-6xl mx-auto">
-        <header class="flex justify-between mb-10">
-            <h2 class="font-black italic">DEALROCKET 🚀</h2>
-            <div class="flex gap-4 items-center">
-                <button onclick="toggleProfile()" class="text-xs border border-white/20 p-2 rounded">Профил</button>
-                <button onclick="localStorage.clear(); location.href='index.html'" class="text-xs text-red-400">Изход</button>
-            </div>
-        </header>
+<body class="p-4 md:p-8">
 
-        <!-- PROFILE MODAL -->
-        <div id="profileBox" class="glass p-8 mb-10 hidden">
-            <h3 class="neon font-bold mb-4">Настройки на профила</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" id="editName" placeholder="Име / Фирма" class="bg-black p-2 border border-white/10 rounded">
-                <input type="text" id="editReg" placeholder="ЕИК" class="bg-black p-2 border border-white/10 rounded">
-                <input type="text" id="editPhone" placeholder="Телефон" class="bg-black p-2 border border-white/10 rounded">
-                <input type="text" id="editIban" placeholder="IBAN" class="bg-black p-2 border border-white/10 rounded">
-                <input type="text" id="editLogo" placeholder="Линк към Лого (URL)" class="bg-black p-2 border border-white/10 rounded col-span-2">
-            </div>
-            <button onclick="saveProfile()" class="bg-green-500 text-black px-6 py-2 rounded mt-4 font-bold">Запази промените</button>
+    <header class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
+        <div class="flex items-center gap-4">
+            <div class="space-font text-2xl neon-text italic">DEALROCKET 🚀</div>
+            <span id="rankBadge" class="text-[10px] border border-green-500 text-green-500 px-2 py-1 rounded uppercase font-bold tracking-tighter">Space Cadet</span>
         </div>
+        
+        <nav class="flex gap-2 glass p-2">
+            <button onclick="showSection('overview')" class="nav-btn active" id="btn-overview">Мисии</button>
+            <button onclick="showSection('settings')" class="nav-btn" id="btn-settings">Настройки</button>
+            <button onclick="showSection('calendar')" class="nav-btn" id="btn-calendar">Дневник</button>
+            <button onclick="showAdmin()" class="nav-btn hidden border border-purple-500 text-purple-500" id="btn-admin">Админ</button>
+        </nav>
 
-        <h1 class="text-3xl font-light mb-8 italic">Добре дошъл, <span id="wName" class="neon font-bold">Пилот</span>!</h1>
+        <div class="text-right">
+            <p id="pilotName" class="font-bold text-lg leading-none">Пилот</p>
+            <button onclick="logout()" class="text-[10px] text-red-500 uppercase font-bold">Изход</button>
+        </div>
+    </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div onclick="location.href='generator.html'" class="glass p-10 cursor-pointer hover:border-green-400 transition">
-                <div class="text-4xl mb-4">🛰️</div>
-                <h3 class="font-bold uppercase">Генератор на Оферти</h3>
-                <p class="text-gray-400 text-sm mt-2">Създай убийствена оферта.</p>
+    <main class="max-w-7xl mx-auto">
+        
+        <!-- СЕКЦИЯ: ПРЕГЛЕД (OVERVIEW) -->
+        <section id="section-overview" class="space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div onclick="window.location.href='generator.html'" class="glass p-10 cursor-pointer hover:border-green-400 transition group">
+                    <div class="text-4xl mb-4 group-hover:scale-125 transition">🛰️</div>
+                    <h3 class="text-xl font-bold mb-2 uppercase">Генератор на Оферти</h3>
+                    <p class="text-xs text-gray-500 leading-relaxed">Изстреляй нова оферта с автоматични настройки.</p>
+                </div>
+                <div class="glass p-10 opacity-50 relative overflow-hidden">
+                    <div class="text-4xl mb-4">🛡️</div>
+                    <h3 class="text-xl font-bold mb-2 uppercase">Asteroid Defense</h3>
+                    <p class="text-xs text-gray-500 leading-relaxed">Протоколи и гаранции. Отключва се за Rank: Commander.</p>
+                </div>
+                <div class="glass p-10 opacity-50">
+                    <div class="text-4xl mb-4">📸</div>
+                    <h3 class="text-xl font-bold mb-2 uppercase">Signal Boost</h3>
+                    <p class="text-xs text-gray-500 leading-relaxed">QR маркетингови карти. Отключва се за Rank: Commander.</p>
+                </div>
             </div>
-            <div class="glass p-10 opacity-50"><h3 class="font-bold uppercase">🛡️ Asteroid Defense</h3><p class="text-xs">Скоро...</p></div>
+
+            <div class="glass p-8">
+                <h3 class="space-font text-xs text-gray-500 mb-6 tracking-widest uppercase">Последни изстрелвания</h3>
+                <div id="historyTable" class="text-sm text-gray-400 italic">Все още няма записани мисии...</div>
+            </div>
+        </section>
+
+        <!-- СЕКЦИЯ: НАСТРОЙКИ (SETTINGS) -->
+        <section id="section-settings" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 text-left">
+                <!-- ФИРМЕНИ ДАННИ -->
+                <div class="glass p-8 space-y-4">
+                    <h3 class="neon-text font-bold mb-4 uppercase text-sm">Брандиране и Фирма</h3>
+                    <div><label class="text-[10px] text-gray-500 font-bold uppercase">Име на фирма / Бранд</label><input type="text" id="set-name" class="input-dark"></div>
+                    <div><label class="text-[10px] text-gray-500 font-bold uppercase">ЕИК (ако има)</label><input type="text" id="set-reg" class="input-dark"></div>
+                    <div><label class="text-[10px] text-gray-500 font-bold uppercase">Телефон</label><input type="text" id="set-phone" class="input-dark"></div>
+                    <div><label class="text-[10px] text-gray-500 font-bold uppercase">IBAN за плащане</label><input type="text" id="set-iban" class="input-dark"></div>
+                    <div><label class="text-[10px] text-gray-500 font-bold uppercase">Лого URL (линк към снимка)</label><input type="text" id="set-logo" class="input-dark" placeholder="https://..."></div>
+                </div>
+
+                <!-- НАСТРОЙКИ НА ДВИГАТЕЛЯ -->
+                <div class="glass p-8 space-y-4">
+                    <h3 class="neon-text font-bold mb-4 uppercase text-sm">Двигател на Калкулатора (PRO)</h3>
+                    <div>
+                        <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Основна мерна единица</label>
+                        <select id="set-unit" class="input-dark mt-1">
+                            <option value="кв.м">Квадратура (кв.м)</option>
+                            <option value="час">Време (час)</option>
+                            <option value="км">Разстояние (км)</option>
+                            <option value="бр">Количество (бр)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Заглавие на първа колона</label>
+                        <input type="text" id="set-col1" class="input-dark" placeholder="Напр. Вид услуга">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">По подразбиране (Условия)</label>
+                        <textarea id="set-terms" class="input-dark h-24" placeholder="Твоите стандартни условия..."></textarea>
+                    </div>
+                    <button onclick="saveSettings()" class="w-full bg-green-500 text-black font-black py-4 rounded-xl mt-4 uppercase">Запази Промените 💾</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- СЕКЦИЯ: ДНЕВНИК (CALENDAR) -->
+        <section id="section-calendar" class="hidden">
+            <div class="max-w-md mx-auto glass p-8">
+                <h3 class="neon-text font-bold mb-6 text-center uppercase tracking-widest">Дневник на пилота</h3>
+                <div id="calendar-month-name" class="text-center font-bold mb-4 text-sm uppercase">Март 2026</div>
+                <div class="calendar-grid" id="calendar-grid">
+                    <!-- Зарежда се с JS -->
+                </div>
+                <p class="text-[10px] text-gray-500 mt-6 italic text-center">Кликни върху дата, за да добавиш бележка за мисия.</p>
+            </div>
+        </section>
+
+        <!-- СЕКЦИЯ: АДМИН (ADMIN) -->
+        <section id="section-admin" class="hidden space-y-6">
+            <div class="glass p-8">
+                <h3 class="text-purple-500 font-bold mb-6 uppercase tracking-widest">Mothership Control 🛸</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                    <div class="bg-black/40 p-4 rounded-xl">
+                        <p class="text-[10px] text-gray-500 uppercase">Потребители</p>
+                        <p id="admin-users" class="text-2xl font-bold">0</p>
+                    </div>
+                    <div class="bg-black/40 p-4 rounded-xl">
+                        <p class="text-[10px] text-gray-500 uppercase">Оферти</p>
+                        <p id="admin-offers" class="text-2xl font-bold">0</p>
+                    </div>
+                </div>
+                <!-- Тук ще се добави списък за триене на неактивни -->
+                <div class="mt-10">
+                    <button onclick="cleanupUsers()" class="border border-red-500 text-red-500 px-6 py-2 rounded-full text-xs uppercase font-bold hover:bg-red-500 hover:text-white transition">Изчисти неактивни (>60 дни)</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL ЗА БЕЛЕЖКИ -->
+    <div id="noteModal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden p-4 z-50">
+        <div class="glass p-8 w-full max-w-sm">
+            <h3 id="noteDate" class="neon-text font-bold mb-4">Дата</h3>
+            <textarea id="noteText" class="input-dark h-32" placeholder="Напиши бележка..."></textarea>
+            <div class="flex gap-2 mt-4">
+                <button onclick="saveNote()" class="flex-grow bg-green-500 text-black font-bold py-2 rounded-lg">Запази</button>
+                <button onclick="closeNote()" class="px-4 py-2 border border-white/10 rounded-lg">Отказ</button>
+            </div>
         </div>
     </div>
 
     <script>
-        const u = JSON.parse(localStorage.getItem('dr_user'));
-        if(!u) location.href='index.html';
-        document.getElementById('wName').innerText = u.name;
+        const API_URL = "https://script.google.com/macros/s/AKfycbzhckte9EXQX9OA5CLg5DkIGQVudFjlj8PypwLKvd880fPEn-Zr-bPWlUAvdCazRd1m8A/exec";
+        const SUPER_ADMIN_EMAIL = "mestimworkspace@gmail.com"; // Сложи твоя имейл!
 
-        function toggleProfile() {
-            const box = document.getElementById('profileBox');
-            box.classList.toggle('hidden');
-            document.getElementById('editName').value = u.name || "";
-            document.getElementById('editReg').value = u.regNumber || "";
-            document.getElementById('editPhone').value = u.phone || "";
-            document.getElementById('editIban').value = u.iban || "";
-            document.getElementById('editLogo').value = u.logo || "";
+        let userData = JSON.parse(localStorage.getItem('dr_user'));
+        if (!userData) window.location.href = "index.html";
+
+        // Първоначално зареждане
+        document.getElementById('pilotName').innerText = userData.name;
+        document.getElementById('rankBadge').innerText = userData.rank || "Space Cadet";
+        if (userData.email === SUPER_ADMIN_EMAIL) document.getElementById('btn-admin').classList.remove('hidden');
+
+        function showSection(section) {
+            document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+            document.getElementById('section-' + section).classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + section).classList.add('active');
+
+            if (section === 'calendar') generateCalendar();
+            if (section === 'settings') loadSettings();
         }
 
-        async function saveProfile() {
-            const updated = {
+        // --- ЛОГИКА ЗА НАСТРОЙКИ ---
+        function loadSettings() {
+            document.getElementById('set-name').value = userData.name || "";
+            document.getElementById('set-reg').value = userData.regNumber || "";
+            document.getElementById('set-phone').value = userData.phone || "";
+            document.getElementById('set-iban').value = userData.iban || "";
+            document.getElementById('set-logo').value = userData.logo || "";
+        }
+
+        async function saveSettings() {
+            const btn = event.target;
+            btn.innerText = "Синхронизиране...";
+            
+            const payload = {
                 action: "updateProfile",
-                email: u.email,
-                name: document.getElementById('editName').value,
-                regNumber: document.getElementById('editReg').value,
-                phone: document.getElementById('editPhone').value,
-                iban: document.getElementById('editIban').value,
-                logo: document.getElementById('editLogo').value
+                email: userData.email,
+                name: document.getElementById('set-name').value,
+                regNumber: document.getElementById('set-reg').value,
+                phone: document.getElementById('set-phone').value,
+                iban: document.getElementById('set-iban').value,
+                logo: document.getElementById('set-logo').value
             };
-            // Тук сложи твоя Apps Script URL
-            const res = await fetch("ТУК_ТВОЯ_URL", { method: 'POST', body: JSON.stringify(updated)});
-            localStorage.setItem('dr_user', JSON.stringify(updated));
-            alert("Профилът е обновен!");
-            location.reload();
+
+            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const result = await res.json();
+            
+            if (result.result === 'success') {
+                userData = {...userData, ...payload};
+                localStorage.setItem('dr_user', JSON.stringify(userData));
+                alert("Мисията по обновяване на данните е успешна! 🚀");
+                location.reload();
+            }
+        }
+
+        // --- ЛОГИКА ЗА КАЛЕНДАР ---
+        let selectedDate = "";
+        function generateCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = "";
+            const daysInMonth = 31; // За опростяване
+            for (let i = 1; i <= daysInMonth; i++) {
+                const day = document.createElement('div');
+                day.className = "day-cell";
+                day.innerText = i;
+                day.onclick = () => openNote(i);
+                grid.appendChild(day);
+            }
+        }
+
+        function openNote(day) {
+            selectedDate = day + "-03-2026"; // Пример
+            document.getElementById('noteDate').innerText = selectedDate;
+            document.getElementById('noteModal').classList.remove('hidden');
+        }
+
+        function closeNote() { document.getElementById('noteModal').classList.add('hidden'); }
+
+        async function saveNote() {
+            const note = document.getElementById('noteText').value;
+            // Тук по-късно ще добавим запис в Google Sheets (NotesJSON)
+            alert("Бележката е записана в дневника на " + selectedDate);
+            closeNote();
+        }
+
+        // --- АДМИН ЛОГИКА ---
+        async function showAdmin() {
+            showSection('admin');
+            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({action: 'getAdminStats'}) });
+            const stats = await res.json();
+            document.getElementById('admin-users').innerText = stats.totalUsers;
+            document.getElementById('admin-offers').innerText = stats.totalOffers;
+        }
+
+        function logout() {
+            localStorage.removeItem('dr_user');
+            window.location.href = "index.html";
         }
     </script>
 </body>
