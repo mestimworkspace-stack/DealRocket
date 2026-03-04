@@ -164,6 +164,23 @@
     </main>
 
     <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhckte9EXQX9OA5CLg5DkIGQVudFjlj8PypwLKvd880fPEn-Zr-bPWlUAvdCazRd1m8A/exec";
+
+function saveToDB(clientEmail, totalAmount) {
+    const data = {
+        action: "saveOffer",
+        userEmail: "test@user.com", // Тук ще идва от профила по-късно
+        clientName: clientEmail,
+        total: totalAmount
+    };
+
+    fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(data)
+    })
+    .then(res => console.log("Данните са в Космоса (Google Sheets)!"))
+    .catch(err => console.log("Хюстън, имаме проблем: ", err));
+}
         function updateUI() {
             const type = document.getElementById('bizType').value;
             const labelQty = document.getElementById('labelQty');
