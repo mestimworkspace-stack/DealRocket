@@ -5,263 +5,164 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DealRocket 🚀 | Step Your Game Up</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
+        :root { --neon-green: #00ff88; --space-black: #05070a; }
         body {
-            background-color: #05070a;
+            background-color: var(--space-black);
             color: #e2e8f0;
             font-family: 'Montserrat', sans-serif;
             background-image: radial-gradient(circle at 50% 50%, #111827 0%, #05070a 100%);
+            min-height: 100 screen;
         }
         .space-font { font-family: 'Orbitron', sans-serif; }
-        .glass-card {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-        }
-        .rocket-fuel-bar {
-            height: 12px;
-            background: #1e293b;
-            border-radius: 6px;
-            overflow: hidden;
-            transition: all 0.5s ease;
-        }
-        .fuel-progress {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #ff4d00, #ff8800, #00ff88);
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
-            transition: width 0.5s ease;
-        }
-        .neon-border:focus {
-            outline: none;
-            border-color: #00ff88;
-            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
-        }
-        #offer-template {
-            background: white;
-            color: #1a202c;
-            min-height: 842px; /* A4 Ratio */
-        }
-        .alien-gradient {
-            background: linear-gradient(135deg, #00ff88 0%, #00bd65 100%);
-        }
+        .neon-text { color: var(--neon-green); text-shadow: 0 0 10px rgba(0, 255, 136, 0.5); }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .btn-primary { background: var(--neon-green); color: black; font-weight: 900; transition: all 0.3s; }
+        .btn-primary:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--neon-green); }
+        .input-field { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; width: 100%; margin-top: 5px; }
+        .input-field:focus { border-color: var(--neon-green); outline: none; }
+        .hidden { display: none; }
+        .rocket-anim { animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
     </style>
 </head>
-<body class="min-h-screen pb-20">
+<body class="flex flex-col items-center justify-center p-4">
 
-    <!-- HEADER -->
-    <header class="py-8 text-center">
-        <h1 class="space-font text-4xl font-black tracking-widest text-white italic">
-            DEAL<span class="text-green-400">ROCKET</span> 🚀
+    <!-- LANDING SECTION -->
+    <div id="landingPage" class="max-w-4xl text-center space-y-8 mt-20">
+        <div class="rocket-anim text-6xl">🚀</div>
+        <h1 class="space-font text-5xl md:text-7xl font-black italic tracking-tighter">
+            DEAL<span class="neon-text">ROCKET</span>
         </h1>
-        <p class="text-gray-400 text-sm mt-2 tracking-widest uppercase">Step Your Game Up</p>
-    </header>
-
-    <main class="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <p class="text-gray-400 tracking-widest uppercase text-sm">Step Your Game Up</p>
+        <h2 class="text-2xl md:text-3xl font-light">Убийствени оферти, които затварят сделки вместо теб.</h2>
         
-        <!-- КОНТРОЛЕН ПАНЕЛ (Input) -->
-        <section class="space-y-6">
-            <div class="glass-card p-6">
-                <h2 class="text-xl font-bold mb-4 flex items-center">
-                    <span class="mr-2">👽</span> Бордови компютър
-                </h2>
-                
-                <div class="space-y-4">
+        <div class="flex flex-col md:flex-row gap-4 justify-center mt-12">
+            <button onclick="showAuth('register')" class="btn-primary px-10 py-4 rounded-full uppercase tracking-tighter">Старт на мисията</button>
+            <button onclick="showAuth('login')" class="border border-white/20 px-10 py-4 rounded-full uppercase tracking-tighter hover:bg-white/5">Вход за пилоти</button>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 text-left">
+            <div class="glass p-6 rounded-2xl">
+                <div class="text-green-400 mb-2">📡 AI Навигатор</div>
+                <p class="text-xs text-gray-400">AI оптимизира текстовете ти за максимално въздействие.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl">
+                <div class="text-green-400 mb-2">🛡️ Asteroid Defense</div>
+                <p class="text-xs text-gray-400">Автоматични протоколи и гаранции с дигитален подпис.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl">
+                <div class="text-green-400 mb-2">📊 DealScore™</div>
+                <p class="text-xs text-gray-400">Система за оценка на силата на твоята оферта в реално време.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUTH MODAL -->
+    <div id="authModal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden p-4 z-50">
+        <div class="glass max-w-md w-full p-8 rounded-3xl relative">
+            <button onclick="closeAuth()" class="absolute top-4 right-4 text-gray-500 hover:text-white">✕</button>
+            <h2 id="authTitle" class="space-font text-2xl mb-6 neon-text">РЕГИСТРАЦИЯ</h2>
+            
+            <form id="authForm" class="space-y-4">
+                <div id="regFields" class="space-y-4">
                     <div>
-                        <label class="text-xs text-gray-400 uppercase font-bold">Избери мисия (Бизнес)</label>
-                        <select id="bizType" onchange="updateUI()" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-lg mt-1 neon-border">
-                            <option value="laminate">Майстор (Ламинат/Ремонти)</option>
-                            <option value="influencer">Инфлуенсър / Creator</option>
-                            <option value="hvac">Климатици / Соларни Панели</option>
+                        <label class="text-xs font-bold text-gray-500 uppercase">Тип профил</label>
+                        <select id="userType" onchange="toggleBizFields()" class="input-field">
+                            <option value="Freelancer">Фрийлансър / Частно лице</option>
+                            <option value="Company">Фирма (ЕООД/ООД/ЕТ)</option>
                         </select>
                     </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-xs text-gray-400 uppercase font-bold" id="labelQty">Квадратура</label>
-                            <input type="number" id="qty" oninput="refreshAll()" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-lg mt-1 neon-border">
-                        </div>
-                        <div>
-                            <label class="text-xs text-gray-400 uppercase font-bold">Цена (€)</label>
-                            <input type="number" id="price" oninput="refreshAll()" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-lg mt-1 neon-border">
-                        </div>
-                    </div>
-
                     <div>
-                        <label class="text-xs text-gray-400 uppercase font-bold">Добавена стойност / Бонус</label>
-                        <input type="text" id="bonus" oninput="refreshAll()" placeholder="Напр. 12 месеца гаранция" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-lg mt-1 neon-border">
+                        <label class="text-xs font-bold text-gray-500 uppercase">Име / Бранд / Фирма</label>
+                        <input type="text" id="displayName" class="input-field" placeholder="Напр. Иван Иванов или Елит Ремонти">
                     </div>
-                </div>
-            </div>
-
-            <!-- DEAL SCORE METER -->
-            <div class="glass-card p-6">
-                <div class="flex justify-between items-end mb-2">
-                    <h3 class="text-sm font-bold uppercase tracking-tight">DealScore™ (Гориво за сделката)</h3>
-                    <span id="scoreText" class="text-orange-500 font-black">СЛАБО</span>
-                </div>
-                <div class="rocket-fuel-bar">
-                    <div id="fuelBar" class="fuel-progress"></div>
-                </div>
-                <p id="aiAdvice" class="text-xs text-gray-400 mt-3 italic">„Хюстън, офертата ти е празна. Клиентът дори няма да я отвори.“</p>
-            </div>
-
-            <button onclick="downloadOffer()" class="w-full alien-gradient text-gray-900 font-black py-4 rounded-xl shadow-lg transform active:scale-95 transition">
-                ИЗСТРЕЛВАЙ ОФЕРТАТА (PDF) 🛰️
-            </button>
-        </section>
-
-        <!-- ПРЕГЛЕД (Preview) -->
-        <section class="hidden lg:block">
-            <div id="offer-template" class="shadow-2xl overflow-hidden rounded-sm p-12">
-                <div class="flex justify-between border-b-2 border-gray-100 pb-8 mb-8">
-                    <div>
-                        <div class="text-3xl font-black tracking-tighter uppercase" id="outCompany">МОЯТ БИЗНЕС</div>
-                        <p class="text-gray-400 text-sm">ОФЕРТА ЗА УСЛУГИ</p>
-                    </div>
-                    <div class="text-right text-sm">
-                        <p id="outDate"></p>
-                        <p class="font-bold text-blue-600">ID: #ROCKET-001</p>
+                    <div id="companyField" class="hidden">
+                        <label class="text-xs font-bold text-gray-500 uppercase">ЕИК</label>
+                        <input type="text" id="regNumber" class="input-field" placeholder="123456789">
                     </div>
                 </div>
 
-                <div class="mb-10">
-                    <p class="text-xs uppercase text-gray-400 mb-2 font-bold">Относно:</p>
-                    <h2 class="text-xl font-bold" id="outTitle">Професионални услуги</h2>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase">Имейл</label>
+                    <input type="email" id="email" class="input-field" required>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase">Парола</label>
+                    <input type="password" id="password" class="input-field" required>
                 </div>
 
-                <table class="w-full text-left mb-10">
-                    <thead>
-                        <tr class="border-b text-gray-400 text-xs uppercase">
-                            <th class="py-2">Описание</th>
-                            <th class="py-2 text-right">Количество</th>
-                            <th class="py-2 text-right">Сума</th>
-                        </tr>
-                    </thead>
-                    <tbody id="outTable">
-                        <!-- Динамични редове -->
-                    </tbody>
-                </table>
-
-                <div class="flex justify-end border-t pt-4">
-                    <div class="w-48 space-y-2">
-                        <div class="flex justify-between text-sm"><span>Общо:</span> <span id="outTotal">0 €</span></div>
-                        <div class="flex justify-between font-black text-xl border-t pt-2 text-green-600">
-                            <span>КРАЙ:</span> <span id="outGrand">0 €</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-16 p-4 bg-gray-50 rounded italic text-sm text-gray-600 border-l-4 border-green-400">
-                    <b>БОНУС:</b> <span id="outBonus">Без допълнителни бонуси.</span>
-                </div>
-            </div>
-        </section>
-
-    </main>
+                <button type="submit" id="submitBtn" class="btn-primary w-full py-4 rounded-xl mt-4">ИЗСТРЕЛВАНЕ 🚀</button>
+                <p id="authMsg" class="text-xs text-center mt-4"></p>
+            </form>
+        </div>
+    </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhckte9EXQX9OA5CLg5DkIGQVudFjlj8PypwLKvd880fPEn-Zr-bPWlUAvdCazRd1m8A/exec";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhckte9EXQX9OA5CLg5DkIGQVudFjlj8PypwLKvd880fPEn-Zr-bPWlUAvdCazRd1m8A/exec";
+        let currentMode = 'register';
 
-function saveToDB(clientEmail, totalAmount) {
-    const data = {
-        action: "saveOffer",
-        userEmail: "test@user.com", // Тук ще идва от профила по-късно
-        clientName: clientEmail,
-        total: totalAmount
-    };
-
-    fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify(data)
-    })
-    .then(res => console.log("Данните са в Космоса (Google Sheets)!"))
-    .catch(err => console.log("Хюстън, имаме проблем: ", err));
-}
-        function updateUI() {
-            const type = document.getElementById('bizType').value;
-            const labelQty = document.getElementById('labelQty');
-            
-            if (type === 'laminate') labelQty.innerText = 'Квадратура (кв.м)';
-            if (type === 'influencer') labelQty.innerText = 'Брой Постове/Видеа';
-            if (type === 'hvac') labelQty.innerText = 'Брой единици/Системи';
-            
-            refreshAll();
+        function showAuth(mode) {
+            currentMode = mode;
+            document.getElementById('authModal').classList.remove('hidden');
+            document.getElementById('authTitle').innerText = mode === 'register' ? 'РЕГИСТРАЦИЯ' : 'ВХОД ЗА ПИЛОТИ';
+            document.getElementById('regFields').style.display = mode === 'register' ? 'block' : 'none';
+            document.getElementById('submitBtn').innerText = mode === 'register' ? 'СЪЗДАЙ ПРОФИЛ' : 'ВЛЕЗ В КОКПИТА';
         }
 
-        function refreshAll() {
-            const type = document.getElementById('bizType').value;
-            const qty = parseFloat(document.getElementById('qty').value) || 0;
-            const price = parseFloat(document.getElementById('price').value) || 0;
-            const bonus = document.getElementById('bonus').value;
-
-            // Калкулатор логика
-            let finalQty = qty;
-            if (type === 'laminate') finalQty = qty * 1.1; // +10% фира
-
-            const total = finalQty * price;
-
-            // Update Preview
-            document.getElementById('outTable').innerHTML = `
-                <tr class="border-b">
-                    <td class="py-4 font-medium">${type === 'laminate' ? 'Полагане на настилка' : 'Креативни услуги'}</td>
-                    <td class="text-right">${finalQty.toFixed(2)}</td>
-                    <td class="text-right font-bold">${total.toFixed(2)} €</td>
-                </tr>
-            `;
-            document.getElementById('outTotal').innerText = total.toFixed(2) + ' €';
-            document.getElementById('outGrand').innerText = total.toFixed(2) + ' €';
-            document.getElementById('outBonus').innerText = bonus || "Без допълнителни бонуси.";
-
-            updateScore(qty, price, bonus);
+        function closeAuth() {
+            document.getElementById('authModal').classList.add('hidden');
         }
 
-        function updateScore(qty, price, bonus) {
-            let score = 0;
-            let advice = "";
-            
-            if (qty > 0) score += 30;
-            if (price > 0) score += 30;
-            if (bonus.length > 5) score += 40;
+        function toggleBizFields() {
+            const type = document.getElementById('userType').value;
+            document.getElementById('companyField').classList.toggle('hidden', type === 'Freelancer');
+        }
 
-            const fuel = document.getElementById('fuelBar');
-            const scoreText = document.getElementById('scoreText');
-            const aiAdvice = document.getElementById('aiAdvice');
+        document.getElementById('authForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById('authMsg');
+            msg.innerText = "Подготовка за изстрелване...";
 
-            fuel.style.width = score + "%";
+            const payload = {
+                action: currentMode,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            };
 
-            if (score < 40) {
-                scoreText.innerText = "ГОЛО ПРЕДЛОЖЕНИЕ 🦴";
-                scoreText.style.color = "#ff4d00";
-                aiAdvice.innerText = "„Добави малко бонус информация, за да не изглеждаш като аматьор.“";
-            } else if (score < 90) {
-                scoreText.innerText = "СТАБИЛНА ОФЕРТА 💪";
-                scoreText.style.color = "#ffcc00";
-                aiAdvice.innerText = "„Вече сме в орбита! Добави конкретен срок на валидност за 100% успех.“";
-            } else {
-                scoreText.innerText = "УБИЙСТВЕНА ОФЕРТА 🔥";
-                scoreText.style.color = "#00ff88";
-                aiAdvice.innerText = "„Маняк, тази оферта е бетон. Излитаме!“";
+            if (currentMode === 'register') {
+                payload.userType = document.getElementById('userType').value;
+                payload.name = document.getElementById('displayName').value;
+                payload.regNumber = document.getElementById('regNumber').value;
             }
-        }
 
-        function downloadOffer() {
-            const element = document.getElementById('offer-template');
-            element.classList.remove('rounded-sm'); // Красиво за PDF
-            html2pdf().from(element).set({
-                margin: 0.5,
-                filename: 'DealRocket_Oferta.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-            }).save();
-        }
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
 
-        document.getElementById('outDate').innerText = new Date().toLocaleDateString('bg-BG');
-        updateUI();
+                if (result.result === 'success') {
+                    if (currentMode === 'register') {
+                        msg.className = "text-green-400 text-xs text-center mt-4";
+                        msg.innerText = "Профилът е създаден! Вече можеш да влезеш.";
+                        setTimeout(() => showAuth('login'), 2000);
+                    } else {
+                        localStorage.setItem('dr_user', JSON.stringify(result.user));
+                        msg.innerText = "Връзка с базата установена! Влизаме...";
+                        // ТУК ЩЕ ПРЕНАСОЧИМ КЪМ DASHBOARD
+                        window.location.href = "dashboard.html";
+                    }
+                } else {
+                    msg.className = "text-red-400 text-xs text-center mt-4";
+                    msg.innerText = "Грешка: " + result.message;
+                }
+            } catch (err) {
+                msg.innerText = "Хюстън, имаме проблем с връзката.";
+            }
+        };
     </script>
 </body>
 </html>
