@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroid Defense | DealRocket 🛡️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --neon-blue: #00d4ff; --bg: #05070a; }
+        body { background: var(--bg); color: white; font-family: 'Montserrat', sans-serif; background-image: radial-gradient(circle at 100% 100%, #1e1b4b 0%, #05070a 100%); min-height: 100vh; }
+        .space-font { font-family: 'Orbitron', sans-serif; }
+        .neon-blue-text { color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; }
+        .input-dark { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 12px; width: 100%; color: white; font-size: 0.9rem; }
+        #signature-pad { background: white; border-radius: 12px; border: 2px solid var(--neon-blue); cursor: crosshair; touch-action: none; }
+        
+        /* PREVIEW AREA */
+        #pdf-preview { background: white; color: #111; width: 794px; min-height: 1123px; padding: 60px; margin: auto; transform: scale(0.6); transform-origin: top center; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+        .proto-header { border-bottom: 4px solid #111; padding-bottom: 20px; margin-bottom: 30px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <header class="max-w-7xl mx-auto flex justify-between items-center mb-10">
+        <div class="space-font text-xl neon-blue-text italic cursor-pointer" onclick="window.location.href='dashboard.html'">DEALROCKET 🚀</div>
+        <div class="text-[10px] text-blue-400 uppercase tracking-widest font-bold border border-blue-500/30 px-3 py-1 rounded-full">Система "Asteroid Defense" 🛡️</div>
+    </header>
+
+    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- ЛЯВО: КОНФИГУРАЦИЯ -->
+        <div class="lg:col-span-5 space-y-6">
+            <div class="glass p-8 space-y-4">
+                <h2 class="space-font text-blue-400 text-sm tracking-widest uppercase">Параметри на Защитата</h2>
+                
+                <div>
+                    <label class="text-[10px] text-gray-500 font-bold uppercase">Име на клиент / Обект</label>
+                    <input type="text" id="clientName" oninput="updateProto()" class="input-dark" placeholder="Копирай от офертата...">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] text-gray-500 font-bold uppercase">Гаранция (месеца)</label>
+                        <input type="number" id="warranty" oninput="updateProto()" class="input-dark" value="24">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-gray-500 font-bold uppercase">Дата на приключване</label>
+                        <input type="date" id="finishDate" oninput="updateProto()" class="input-dark">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[10px] text-gray-500 font-bold uppercase">Извършени дейности (описание)</label>
+                    <textarea id="workDone" oninput="updateProto()" class="input-dark h-24" placeholder="Опиши точно какво е свършено..."></textarea>
+                </div>
+            </div>
+
+            <!-- ПОДПИС -->
+            <div class="glass p-8 space-y-4">
+                <h3 class="text-blue-400 font-bold text-xs uppercase tracking-widest flex justify-between">
+                    Дигитален подпис на клиента
+                    <button onclick="clearSig()" class="text-red-400 text-[9px] hover:underline">ИЗЧИСТИ</button>
+                </h3>
+                <canvas id="signature-pad" class="w-full h-40"></canvas>
+                <p class="text-[10px] text-gray-500 italic text-center">Клиентът трябва да се разпише в полето по-горе.</p>
+            </div>
+
+            <button onclick="exportProto()" class="w-full bg-blue-500 text-white font-black py-5 rounded-2xl shadow-[0_0_30px_rgba(0,212,255,0.3)] uppercase tracking-widest transition hover:scale-[1.02]">Генерирай Протокол & Гаранция 🚀</button>
+        </div>
+
+        <!-- ДЯСНО: PREVIEW -->
+        <div class="lg:col-span-7 overflow-hidden">
+            <div id="pdf-preview">
+                <div class="proto-header flex justify-between items-end">
+                    <div>
+                        <h1 class="text-3xl font-black uppercase tracking-tighter">ПРИЕМО-ПРЕДАВАТЕЛЕН ПРОТОКОЛ</h1>
+                        <p class="text-xs text-gray-500 mt-1">Документ № <span id="protoID">...</span></p>
+                    </div>
+                    <div id="outLogo" class="text-right font-black italic text-gray-300">DEALROCKET</div>
+                </div>
+
+                <div class="space-y-6 text-sm">
+                    <p>Днес, <span id="outDate" class="font-bold">...</span>, се състави настоящият протокол между:</p>
+                    
+                    <div class="grid grid-cols-2 gap-8">
+                        <div class="p-4 bg-gray-50 border-l-4 border-blue-500">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase">ИЗПЪЛНИТЕЛ</p>
+                            <p id="outMyName" class="font-bold">...</p>
+                            <p id="outMyID" class="text-xs text-gray-500">...</p>
+                        </div>
+                        <div class="p-4 bg-gray-50 border-l-4 border-gray-400">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase">ВЪЗЛОЖИТЕЛ (КЛИЕНТ)</p>
+                            <p id="outClientName" class="font-bold italic">...</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold border-b mb-2 uppercase text-[11px]">Описание на приетата работа:</h4>
+                        <p id="outWork" class="leading-relaxed min-h-[100px] text-gray-700">...</p>
+                    </div>
+
+                    <div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                        <h4 class="font-bold text-blue-800 uppercase text-[11px] mb-2 tracking-widest italic">🛡️ Астероидна защита (Гаранционни условия):</h4>
+                        <p class="text-xs text-blue-900 leading-relaxed">
+                            Изпълнителят предоставя пълна гаранция за извършената работа за период от <span id="outWarranty" class="font-bold text-lg">24</span> месеца. Гаранцията покрива дефекти, възникнали при нормална експлоатация.
+                        </p>
+                    </div>
+
+                    <div class="text-[11px] text-gray-500 border-t pt-4">
+                        С подписването на този документ Възложителят потвърждава, че работата е изпълнена качествено, в пълен обем и без забележки.
+                    </div>
+
+                    <div class="mt-20 flex justify-between items-end">
+                        <div class="text-center">
+                            <div class="w-40 border-b-2 border-gray-900 mb-2"></div>
+                            <p class="text-[9px] font-bold uppercase text-gray-400">ИЗПЪЛНИТЕЛ</p>
+                        </div>
+                        <div class="text-center">
+                            <img id="sigImg" src="" class="h-20 w-auto mx-auto hidden">
+                            <div id="sigPlaceholder" class="h-20 w-40 border-b-2 border-dashed border-blue-300 mb-2"></div>
+                            <p class="text-[9px] font-bold uppercase text-gray-400 tracking-widest">ВЪЗЛОЖИТЕЛ (ПОДПИС)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const userData = JSON.parse(localStorage.getItem('dr_user'));
+        if(!userData) window.location.href = "index.html";
+
+        // Signature Pad Init
+        const canvas = document.querySelector("canvas");
+        const signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+            penColor: 'rgb(0, 0, 150)'
+        });
+
+        function resizeCanvas() {
+            const ratio =  Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+            signaturePad.clear();
+        }
+        window.onresize = resizeCanvas;
+        resizeCanvas();
+
+        function clearSig() { 
+            signaturePad.clear(); 
+            document.getElementById('sigImg').classList.add('hidden');
+            document.getElementById('sigPlaceholder').classList.remove('hidden');
+        }
+
+        // Update Logic
+        function updateProto() {
+            document.getElementById('outClientName').innerText = document.getElementById('clientName').value || "Уважаеми Клиент";
+            document.getElementById('outWarranty').innerText = document.getElementById('warranty').value;
+            document.getElementById('outDate').innerText = new Date(document.getElementById('finishDate').value || Date.now()).toLocaleDateString('bg-BG');
+            document.getElementById('outWork').innerText = document.getElementById('workDone').value || "Опиши извършената работа...";
+            
+            // Sync Signature
+            if(!signaturePad.isEmpty()) {
+                const data = signaturePad.toDataURL();
+                document.getElementById('sigImg').src = data;
+                document.getElementById('sigImg').classList.remove('hidden');
+                document.getElementById('sigPlaceholder').classList.add('hidden');
+            }
+        }
+
+        // Capture signature while drawing
+        canvas.addEventListener("touchend", updateProto);
+        canvas.addEventListener("mouseup", updateProto);
+
+        async function exportProto() {
+            if(signaturePad.isEmpty()) {
+                alert("⚠️ Моля, клиентът да се разпише преди генериране!");
+                return;
+            }
+
+            const element = document.getElementById('pdf-preview');
+            html2pdf().from(element).set({
+                margin: 0,
+                filename: 'DealRocket_Protocol.pdf',
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            }).save();
+            
+            // ТУК: Запис в базата Analytics (Action: Protocol Generated)
+        }
+
+        // Init Data from Profile
+        document.getElementById('outMyName').innerText = userData.name.toUpperCase();
+        document.getElementById('outMyID').innerText = userData.type === 'Company' ? "ЕИК: " + userData.reg : "Професионални услуги";
+        document.getElementById('protoID').innerText = "AD-" + Math.floor(Math.random() * 100000);
+        document.getElementById('finishDate').valueAsDate = new Date();
+        updateProto();
+    </script>
+</body>
+</html>
