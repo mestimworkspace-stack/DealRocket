@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор | DealRocket 🚀</title>
+    <title>Команден мост | DealRocket 🚀</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -14,263 +14,263 @@
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; }
         .fuel-bar { height: 12px; background: #1a1d23; border-radius: 6px; overflow: hidden; }
         .fuel-progress { height: 100%; width: 0%; transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        /* PDF Preview Style */
-        #pdf-export-area { background: white; color: #1a202c; width: 794px; min-height: 1123px; padding: 60px; margin: auto; box-shadow: 0 0 50px rgba(0,0,0,0.5); transform: scale(0.6); transform-origin: top center; }
+        .nebula-panel { border-left: 4px solid #8b5cf6; background: rgba(139, 92, 246, 0.05); }
+        #pdf-export-area { background: white; color: #1a202c; width: 794px; min-height: 1123px; padding: 60px; margin: auto; position: relative; }
+        .signature-box { border-bottom: 2px solid #1a202c; width: 200px; height: 60px; }
     </style>
 </head>
-<body class="p-4">
+<body class="p-4 md:p-10">
 
-    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 mt-10">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        <!-- ПАНЕЛ ЗА ВЪВЕЖДАНЕ -->
-        <div class="glass p-8 space-y-6">
-            <h2 class="space-font text-green-400 text-xl tracking-widest">ПОДГОТОВКА НА МИСИЯТА</h2>
-            
-            <div class="grid grid-cols-1 gap-4">
-                <div>
-                    <label class="text-[10px] uppercase font-bold text-gray-500">Сфера на бизнес</label>
-                    <select id="niche" onchange="updateNiche()" class="w-full bg-black/40 border border-white/10 p-3 rounded-xl mt-1 text-white">
-                        <option value="laminate">🏗️ Подови настилки & Ремонти</option>
-                        <option value="influencer">📸 Инфлуенсър & Криетив</option>
-                        <option value="legal">⚖️ Адвокатски / Консултантски</option>
-                        <option value="moving">🚛 Транспорт & Преместване</option>
-                        <option value="cleaning">✨ Почистване</option>
-                        <option value="hvac">🌬️ Климатици & Солари</option>
-                        <option value="detailing">🏎️ Авто Детайлинг</option>
-                        <option value="it">💻 IT & Софтуер</option>
-                    </select>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
+        <!-- ЛЯВА КОЛОНА: КОНТРОЛИ -->
+        <div class="lg:col-span-5 space-y-6">
+            <div class="glass p-8 space-y-6">
+                <h2 class="space-font text-green-400 text-xl tracking-widest flex justify-between">
+                    МИСИЯ ПАРАМЕТРИ 🛰️
+                    <span id="rankDisplay" class="text-[10px] bg-green-500/20 px-2 py-1 rounded text-green-400">Space Cadet</span>
+                </h2>
+                
+                <div class="space-y-4">
                     <div>
-                        <label id="qtyLabel" class="text-[10px] uppercase font-bold text-gray-500">Количество</label>
-                        <input type="number" id="qty" oninput="calculate()" class="w-full bg-black/40 border border-white/10 p-3 rounded-xl mt-1">
+                        <label class="text-[10px] uppercase font-bold text-gray-500">Ниша на мисията</label>
+                        <select id="niche" onchange="updateNiche()" class="w-full bg-black/40 border border-white/10 p-4 rounded-xl mt-1 text-white outline-none focus:border-green-400">
+                            <option value="laminate">🏗️ Ремонти / Ламинат</option>
+                            <option value="influencer">📸 Инфлуенсър / Маркетинг</option>
+                            <option value="legal">⚖️ Адвокатски услуги</option>
+                            <option value="it">💻 ИТ / Софтуер</option>
+                            <option value="cleaning">✨ Почистване</option>
+                        </select>
                     </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label id="qtyLabel" class="text-[10px] uppercase font-bold text-gray-500">Количество</label>
+                            <input type="number" id="qty" oninput="calculate()" class="w-full bg-black/40 border border-white/10 p-4 rounded-xl mt-1">
+                        </div>
+                        <div>
+                            <label id="priceLabel" class="text-[10px] uppercase font-bold text-gray-500">Ед. Цена (€)</label>
+                            <input type="number" id="price" oninput="calculate()" class="w-full bg-black/40 border border-white/10 p-4 rounded-xl mt-1">
+                        </div>
+                    </div>
+
                     <div>
-                        <label class="text-[10px] uppercase font-bold text-gray-500">Ед. Цена (€)</label>
-                        <input type="number" id="price" oninput="calculate()" class="w-full bg-black/40 border border-white/10 p-3 rounded-xl mt-1">
+                        <label class="text-[10px] uppercase font-bold text-gray-500">Asteroid Defense (Гаранции / Условия)</label>
+                        <textarea id="terms" oninput="calculate()" rows="3" placeholder="Напр. 2 години гаранция, плащане 50% аванс..." class="w-full bg-black/40 border border-white/10 p-4 rounded-xl mt-1 text-sm"></textarea>
                     </div>
-                </div>
 
-                <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
-                    <span class="text-xs font-bold uppercase">Начисли 20% ДДС</span>
-                    <input type="checkbox" id="vat" onchange="calculate()" class="w-6 h-6 accent-green-400">
-                </div>
-
-                <div>
-                    <label class="text-[10px] uppercase font-bold text-gray-500">Добавена стойност (Бонус)</label>
-                    <input type="text" id="bonus" oninput="calculate()" placeholder="Напр. 24 месеца гаранция" class="w-full bg-black/40 border border-white/10 p-3 rounded-xl mt-1">
+                    <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5">
+                        <span class="text-xs font-bold uppercase">Включи ДДС (20%)</span>
+                        <input type="checkbox" id="vat" onchange="calculate()" class="w-6 h-6 accent-green-400">
+                    </div>
                 </div>
             </div>
 
-            <!-- DEAL SCORE -->
-            <div class="pt-6 border-t border-white/10">
-                <div class="flex justify-between mb-2">
-                    <span class="text-[10px] font-black uppercase text-gray-400">DealScore™ Сила</span>
-                    <span id="scoreStatus" class="text-xs font-bold text-red-500">ГОЛО ПРЕДЛОЖЕНИЕ</span>
+            <!-- NEBULA AI SIMULATOR -->
+            <div class="glass p-6 nebula-panel">
+                <h3 class="text-purple-400 text-xs font-black uppercase mb-3 flex items-center gap-2">
+                    <span>🧠</span> Nebula AI: Симулатор на възражения
+                </h3>
+                <div id="nebulaAdvice" class="text-[11px] text-gray-400 italic leading-relaxed">
+                    Избери ниша и цена, за да активираш симулатора...
+                </div>
+                <button onclick="runNebula()" class="mt-4 text-[10px] font-bold text-purple-400 border border-purple-400/30 px-3 py-1 rounded hover:bg-purple-400/10">
+                    ТРЕНИРАЙ ВЪЗРАЖЕНИЯ →
+                </button>
+            </div>
+
+            <!-- DEAL SCORE METER -->
+            <div class="glass p-8">
+                <div class="flex justify-between mb-2 items-end">
+                    <span class="text-[10px] font-black uppercase text-gray-500">Сила на офертата (DealScore™)</span>
+                    <span id="scoreStatus" class="text-xs font-bold text-red-500 uppercase">Слабо гориво</span>
                 </div>
                 <div class="fuel-bar"><div id="fuel" class="fuel-progress bg-red-600"></div></div>
-                <p id="aiAdvice" class="mt-3 text-[11px] text-gray-500 italic">„Хюстън, добави лого и бонус, за да излетиш.“</p>
+                <p id="fuelAdvice" class="mt-4 text-[11px] text-gray-500 leading-relaxed italic">
+                    "Офертата е прекалено гола. Без условия (Asteroid Defense) клиентът ще те атакува лесно."
+                </p>
             </div>
 
-            <button onclick="exportPDF()" class="w-full bg-green-500 hover:bg-green-400 text-black font-black py-4 rounded-2xl shadow-lg transition-all uppercase">
-                ИЗСТРЕЛВАЙ ОФЕРТАТА (PDF) 🛰️
+            <button onclick="exportPDF()" class="w-full bg-green-500 hover:bg-green-400 text-black font-black py-5 rounded-2xl shadow-[0_0_30px_rgba(0,255,136,0.3)] transition-all uppercase tracking-tighter">
+                ИЗСТРЕЛВАЙ КЪМ КЛИЕНТА 🚀
             </button>
         </div>
 
-        <!-- PREVIEW (PDF TEMPLATE) -->
-        <div class="hidden lg:block overflow-hidden">
+        <!-- ДЯСНА КОЛОНА: PREVIEW -->
+        <div class="lg:col-span-7 overflow-hidden">
             <div id="pdf-export-area">
-                <div class="flex justify-between items-start mb-16">
+                <!-- PDF HEADER -->
+                <div class="flex justify-between items-start mb-12 border-b-2 border-gray-900 pb-8">
                     <div>
-                        <h1 class="text-4xl font-black italic tracking-tighter text-gray-900">ОФЕРТА</h1>
-                        <p class="text-xs text-gray-400 mt-1" id="pdfDate"></p>
+                        <h1 class="text-5xl font-black italic tracking-tighter text-gray-900 leading-none">ОФЕРТА</h1>
+                        <p class="text-[10px] text-gray-400 font-bold mt-2 uppercase tracking-widest" id="pdfDate"></p>
                     </div>
-                    <div id="pdfLogo" class="w-20 h-20 bg-gray-100 flex items-center justify-center text-[10px] text-gray-400 border border-dashed border-gray-300">LOGO</div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-8 mb-12">
-                    <div>
-                        <p class="text-[10px] font-bold text-gray-400 uppercase">Изпълнител:</p>
-                        <p class="text-sm font-bold" id="pProviderName"></p>
-                        <p class="text-xs text-gray-500" id="pProviderID"></p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] font-bold text-gray-400 uppercase">За клиент:</p>
-                        <p class="text-sm font-bold">УВАЖАЕМИ КЛИЕНТ</p>
+                    <div class="text-right">
+                        <img id="pdfLogo" src="" class="h-16 w-auto ml-auto hidden">
+                        <div id="pdfLogoPlaceholder" class="w-16 h-16 bg-gray-100 flex items-center justify-center text-[8px] text-gray-300 font-bold border-2 border-dashed">LOGO</div>
                     </div>
                 </div>
 
-                <table class="w-full mb-10 border-t-2 border-gray-900">
-                    <thead class="text-[10px] uppercase font-bold text-gray-500">
-                        <tr><th class="py-4 text-left">Услуга / Продукт</th><th class="text-center">К-во</th><th class="text-right">Сума</th></tr>
+                <!-- CLIENT & PROVIDER -->
+                <div class="grid grid-cols-2 gap-12 mb-10 text-sm">
+                    <div>
+                        <h4 class="text-[10px] font-black text-gray-400 uppercase mb-3">Изпълнител</h4>
+                        <p class="font-bold text-gray-900" id="pName"></p>
+                        <p class="text-gray-600 text-xs" id="pID"></p>
+                        <p class="text-gray-600 text-xs" id="pPhone"></p>
+                    </div>
+                    <div>
+                        <h4 class="text-[10px] font-black text-gray-400 uppercase mb-3">Получател</h4>
+                        <p class="font-bold text-gray-900 italic">Уважаеми Клиент,</p>
+                        <p class="text-gray-500 text-xs mt-1">Обект: Професионални услуги</p>
+                    </div>
+                </div>
+
+                <!-- TABLE -->
+                <table class="w-full mb-10">
+                    <thead>
+                        <tr class="bg-gray-900 text-white text-[10px] uppercase font-bold">
+                            <th class="py-4 px-4 text-left">Описание на услугата</th>
+                            <th class="py-4 px-4 text-center">Количество</th>
+                            <th class="py-4 px-4 text-right">Сума</th>
+                        </tr>
                     </thead>
-                    <tbody id="pRows" class="text-sm"></tbody>
+                    <tbody id="pRows" class="text-sm border-b border-gray-900"></tbody>
                 </table>
 
-                <div class="flex justify-end">
-                    <div class="w-1/2 space-y-2 border-t pt-4">
-                        <div class="flex justify-between text-xs"><span>Междинна:</span> <span id="pSub">0.00 €</span></div>
+                <!-- TOTALS -->
+                <div class="flex justify-end mb-12">
+                    <div class="w-64 space-y-2">
+                        <div class="flex justify-between text-xs font-bold"><span>Междинна сума:</span> <span id="pSub">0.00 €</span></div>
                         <div class="flex justify-between text-xs text-gray-400"><span>ДДС (20%):</span> <span id="pVat">0.00 €</span></div>
-                        <div class="flex justify-between text-xl font-bold pt-2 border-t-2 border-gray-900"><span>ОБЩО:</span> <span id="pTotal">0.00 €</span></div>
+                        <div class="flex justify-between text-2xl font-black pt-3 border-t-4 border-gray-900">
+                            <span>ОБЩО:</span> <span id="pTotal">0.00 €</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mt-20 p-6 bg-gray-50 border-l-4 border-green-500">
-                    <p class="text-[10px] font-bold text-gray-400 uppercase">Специална Добавена Стойност:</p>
-                    <p class="text-sm italic" id="pBonus">Няма добавени бонуси.</p>
+                <!-- TERMS (ASTEROID DEFENSE) -->
+                <div class="grid grid-cols-1 gap-6 mb-12">
+                    <div class="p-6 bg-gray-50 border-l-8 border-gray-900">
+                        <h4 class="text-[10px] font-black text-gray-900 uppercase mb-2 tracking-widest">Кодекс на мисията (Условия)</h4>
+                        <p class="text-xs leading-relaxed text-gray-700 italic" id="pTerms">Няма зададени специфични условия за тази мисия.</p>
+                    </div>
+                </div>
+
+                <!-- SIGNATURES -->
+                <div class="mt-16 flex justify-between items-end">
+                    <div class="text-center">
+                        <div class="signature-box mb-2"></div>
+                        <p class="text-[9px] uppercase font-bold text-gray-400">Изпълнител</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="signature-box mb-2"></div>
+                        <p class="text-[9px] uppercase font-bold text-gray-400">Клиент (Подпис за одобрение)</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const userData = JSON.parse(localStorage.getItem('dr_user'));
-        const niches = {
-            laminate: { label: "Квадратура (кв.м)", multiplier: 1.1, desc: "Полагане на настилка (+10% фира)" },
-            influencer: { label: "Брой Постове/Сторита", multiplier: 1, desc: "Криетив Кампания" },
-            it: { label: "Часове / Спринтове", multiplier: 1, desc: "Софтуерна разработка" }
-            // Добави останалите тук...
+        const user = JSON.parse(localStorage.getItem('dr_user'));
+        const config = {
+            laminate: { q: "Площ (кв.м)", p: "Цена на кв.м", m: 1.1, d: "Монтаж на настилка (+10% фира)", unit: "кв.м" },
+            influencer: { q: "Брой постове", p: "Цена за брой", m: 1, d: "Creative кампания", unit: "бр." },
+            legal: { q: "Часове", p: "Часова ставка", m: 1, d: "Правна консултация", unit: "ч." },
+            it: { q: "Спринтове", p: "Цена за спринт", m: 1, d: "Разработка", unit: "ед." }
         };
 
-        const niches = {
-    laminate: { 
-        qtyLabel: "Площ (кв.м)", 
-        priceLabel: "Цена за кв.м", 
-        multiplier: 1.1, 
-        desc: "Полагане на настилка (вкл. 10% фира)",
-        unit: "кв.м"
-    },
-    influencer: { 
-        qtyLabel: "Брой видеа/постове", 
-        priceLabel: "Хонорар за брой", 
-        multiplier: 1, 
-        desc: "Креативна кампания и авторски права",
-        unit: "бр."
-    },
-    legal: { 
-        qtyLabel: "Работни часове", 
-        priceLabel: "Часова ставка", 
-        multiplier: 1, 
-        desc: "Правна консултация и изготвяне на документи",
-        unit: "ч."
-    },
-    detailing: { 
-        qtyLabel: "Брой автомобили", 
-        priceLabel: "Цена за пакет", 
-        multiplier: 1, 
-        desc: "Пълен детайлинг пакет (Керамика & Полиране)",
-        unit: "бр."
-    },
-    it: { 
-        qtyLabel: "Работни дни / Спринтове", 
-        priceLabel: "Цена за единица", 
-        multiplier: 1, 
-        desc: "Софтуерна разработка и поддръжка",
-        unit: "ед."
-    }
-};
-
-function updateNiche() {
-    const n = document.getElementById('niche').value;
-    const config = niches[n];
-    
-    // Динамична смяна на етикетите в интерфейса
-    document.getElementById('qtyLabel').innerText = config.qtyLabel;
-    document.getElementById('qty').placeholder = config.qtyLabel;
-    
-    // Сменяме името на цената според бизнеса
-    const priceLabels = document.querySelectorAll('label'); // Намираме етикета за цена
-    priceLabels[2].innerText = config.priceLabel + " (€)"; 
-    
-    calculate();
-}
-
-function calculate() {
-    const n = document.getElementById('niche').value;
-    const config = niches[n];
-    
-    let q = parseFloat(document.getElementById('qty').value) || 0;
-    const p = parseFloat(document.getElementById('price').value) || 0;
-    const isVat = document.getElementById('vat').checked;
-    const b = document.getElementById('bonus').value;
-
-    // Прилагаме специфичната логика (например фирата за ламинат)
-    if (config.multiplier > 1) {
-        q = q * config.multiplier;
-    }
-
-    const sub = q * p;
-    const vatVal = isVat ? sub * 0.2 : 0;
-    const total = sub + vatVal;
-
-    // Обновяваме PDF прегледа с правилните термини
-    document.getElementById('pRows').innerHTML = `
-        <tr class="border-b border-gray-100">
-            <td class="py-6 font-bold text-gray-800">
-                ${config.desc}
-                <div class="text-[10px] text-gray-400 font-normal uppercase mt-1">Категория: ${config.qtyLabel}</div>
-            </td>
-            <td class="py-6 text-center">${q.toFixed(2)} ${config.unit}</td>
-            <td class="py-6 text-right font-black">${sub.toFixed(2)} €</td>
-        </tr>
-    `;
-
-    document.getElementById('pSub').innerText = sub.toFixed(2) + " €";
-    document.getElementById('pVat').innerText = vatVal.toFixed(2) + " €";
-    document.getElementById('pTotal').innerText = total.toFixed(2) + " €";
-    document.getElementById('pBonus').innerText = b || "Няма добавени бонуси.";
-
-    updateScore(q, p, b, isVat);
-}
+        function updateNiche() {
+            const n = document.getElementById('niche').value;
+            document.getElementById('qtyLabel').innerText = config[n].q;
+            document.getElementById('priceLabel').innerText = config[n].p + " (€)";
+            calculate();
+        }
 
         function calculate() {
             const n = document.getElementById('niche').value;
             let q = parseFloat(document.getElementById('qty').value) || 0;
             const p = parseFloat(document.getElementById('price').value) || 0;
             const isVat = document.getElementById('vat').checked;
-            const b = document.getElementById('bonus').value;
+            const t = document.getElementById('terms').value;
 
-            if (n === 'laminate') q *= 1.1;
+            if (n === 'laminate') q *= config.laminate.m;
 
             const sub = q * p;
             const vatVal = isVat ? sub * 0.2 : 0;
             const total = sub + vatVal;
 
             // Update PDF
-            document.getElementById('pRows').innerHTML = `<tr><td class="py-4 font-bold">${niches[n].desc}</td><td class="text-center">${q.toFixed(2)}</td><td class="text-right">${sub.toFixed(2)} €</td></tr>`;
+            document.getElementById('pRows').innerHTML = `<tr><td class="py-6 px-4 font-bold">${config[n].d}</td><td class="text-center">${q.toFixed(2)} ${config[n].unit}</td><td class="text-right font-black">${sub.toFixed(2)} €</td></tr>`;
             document.getElementById('pSub').innerText = sub.toFixed(2) + " €";
             document.getElementById('pVat').innerText = vatVal.toFixed(2) + " €";
             document.getElementById('pTotal').innerText = total.toFixed(2) + " €";
-            document.getElementById('pBonus').innerText = b || "Няма добавени бонуси.";
+            document.getElementById('pTerms').innerText = t || "Няма зададени специфични условия за тази мисия.";
 
-            updateScore(q, p, b, isVat);
+            updateScore(q, p, t, isVat);
         }
 
-        function updateScore(q, p, b, v) {
+        function updateScore(q, p, t, v) {
             let score = 0;
-            if (q > 0 && p > 0) score += 40;
+            if (q > 0 && p > 0) score += 30;
             if (v) score += 20;
-            if (b.length > 5) score += 40;
+            if (t.length > 20) score += 50; // Голям бонус за Условия
 
             const fuel = document.getElementById('fuel');
             const status = document.getElementById('scoreStatus');
+            const advice = document.getElementById('fuelAdvice');
+
             fuel.style.width = score + "%";
             
-            if (score <= 40) { status.innerText = "ГОЛО ПРЕДЛОЖЕНИЕ 🦴"; status.className = "text-xs font-bold text-red-500"; fuel.className = "fuel-progress bg-red-600"; }
-            else if (score < 100) { status.innerText = "СТАБИЛНА ОФЕРТА 💪"; status.className = "text-xs font-bold text-yellow-500"; fuel.className = "fuel-progress bg-yellow-500"; }
-            else { status.innerText = "УБИЙСТВЕНА ОФЕРТА 🔥"; status.className = "text-xs font-bold text-green-500"; fuel.className = "fuel-progress bg-green-500 shadow-lg"; }
+            if (score < 50) {
+                status.innerText = "СЛАБО ГОРИВО 🦴"; status.className = "text-xs font-bold text-red-500"; fuel.className = "fuel-progress bg-red-600";
+                advice.innerText = "„Офертата е прекалено гола. Без условия (Asteroid Defense) клиентът ще те атакува лесно.“";
+            } else if (score < 100) {
+                status.innerText = "СТАБИЛНА ТРАЕКТОРИЯ 💪"; status.className = "text-xs font-bold text-yellow-500"; fuel.className = "fuel-progress bg-yellow-500";
+                advice.innerText = "„Вече имаш защита! Офертата изглежда професионално. Начисли ДДС за пълна мощност.“";
+            } else {
+                status.innerText = "УБИЙСТВЕНА ОФЕРТА 🔥"; status.className = "text-xs font-bold text-green-500"; fuel.className = "fuel-progress bg-green-500 shadow-lg shadow-green-500/50";
+                advice.innerText = "„Мисията е перфектна. С тези условия си бетон – никой не може да ти каже нищо!“";
+            }
+        }
+
+        function runNebula() {
+            const n = document.getElementById('niche').value;
+            const price = document.getElementById('price').value;
+            const advice = document.getElementById('nebulaAdvice');
+            
+            advice.innerText = "Симулирам скептичен клиент... 🛸";
+            
+            setTimeout(() => {
+                if (!price || price < 10) {
+                    advice.innerText = "AI: 'Твърде евтино е, сигурно материалите са боклук.' -> Отговори: 'Цената е ниска заради директен внос, без компромис с качеството!'";
+                } else {
+                    advice.innerText = "AI: 'Съседът ми каза, че може за наполовина!' -> Отговори: 'Съседът лети с каруца, аз летя с DealRocket – моята оферта включва Asteroid Defense гаранция, която той няма!'";
+                }
+            }, 1500);
         }
 
         function exportPDF() {
             const element = document.getElementById('pdf-export-area');
-            html2pdf().from(element).set({ margin: 0, filename: 'Oferta.pdf', html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4' } }).save();
+            html2pdf().from(element).set({
+                margin: 0,
+                filename: 'DealRocket_Mission.pdf',
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            }).save();
         }
 
-        // Автоматично попълване от профила
-        document.getElementById('pProviderName').innerText = userData.name.toUpperCase();
-        document.getElementById('pProviderID').innerText = userData.userType === 'Company' ? "ЕИК: " + userData.regNumber : "Фрийлансър";
+        // Init
+        document.getElementById('pName').innerText = user.name.toUpperCase();
+        document.getElementById('pID').innerText = user.userType === 'Company' ? "ЕИК: " + user.regNumber : "Професионални услуги";
+        document.getElementById('pPhone').innerText = user.phone || "Тел: [Попълни в профила]";
         document.getElementById('pdfDate').innerText = new Date().toLocaleDateString('bg-BG');
+        if (user.logo) {
+            document.getElementById('pdfLogo').src = user.logo;
+            document.getElementById('pdfLogo').classList.remove('hidden');
+            document.getElementById('pdfLogoPlaceholder').classList.add('hidden');
+        }
         updateNiche();
     </script>
 </body>
