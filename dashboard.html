@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Команден Център | DealRocket 🚀</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
@@ -11,15 +12,18 @@
         .space-font { font-family: 'Orbitron', sans-serif; }
         .neon-text { color: var(--neon); text-shadow: 0 0 10px var(--neon); }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; }
-        .nav-btn { padding: 12px 20px; border-radius: 12px; transition: 0.3s; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-btn { padding: 12px 20px; border-radius: 12px; transition: 0.3s; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; }
         .nav-btn:hover, .nav-btn.active { background: var(--neon); color: black; font-weight: bold; }
-        .input-dark { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; width: 100%; color: white; font-size: 0.9rem; }
+        .card-action { transition: 0.3s; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); }
+        .card-action:hover { border-color: var(--neon); background: rgba(0, 255, 136, 0.05); transform: translateY(-5px); }
+        .input-dark { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 12px; width: 100%; color: white; }
         .hidden { display: none; }
+        
         /* Календар стилове */
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
-        .day-cell { aspect-ratio: 1; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; font-size: 0.8rem; transition: 0.2s; }
-        .day-cell:hover { background: var(--neon); color: black; }
-        .has-note { border-color: var(--neon); color: var(--neon); font-weight: bold; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+        .day-cell { aspect-ratio: 1; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 10px; font-size: 0.8rem; transition: 0.2s; }
+        .day-cell:hover { background: var(--neon); color: black; font-weight: bold; }
+        .has-note { border: 2px solid var(--neon); color: var(--neon); font-weight: bold; box-shadow: 0 0 10px rgba(0,255,136,0.2); }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -38,8 +42,8 @@
         </nav>
 
         <div class="text-right">
-            <p id="pilotName" class="font-bold text-lg leading-none">Пилот</p>
-            <button onclick="logout()" class="text-[10px] text-red-500 uppercase font-bold">Изход</button>
+            <p id="pilotName" class="font-bold text-lg leading-none text-white">Пилот</p>
+            <button onclick="logout()" class="text-[10px] text-red-500 uppercase font-bold hover:text-red-400 mt-1">Изход от орбита</button>
         </div>
     </header>
 
@@ -48,124 +52,118 @@
         <!-- СЕКЦИЯ: ПРЕГЛЕД (OVERVIEW) -->
         <section id="section-overview" class="space-y-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div onclick="window.location.href='generator.html'" class="glass p-10 cursor-pointer hover:border-green-400 transition group">
-                    <div class="text-4xl mb-4 group-hover:scale-125 transition">🛰️</div>
+                <!-- ГЕНЕРАТОР -->
+                <div onclick="window.location.href='generator.html'" class="glass p-8 rounded-3xl card-action group">
+                    <div class="text-4xl mb-4 group-hover:scale-110 transition">🛰️</div>
                     <h3 class="text-xl font-bold mb-2 uppercase">Генератор на Оферти</h3>
-                    <p class="text-xs text-gray-500 leading-relaxed">Изстреляй нова оферта с автоматични настройки.</p>
+                    <p class="text-xs text-gray-400 leading-relaxed">Създай "Убийствена оферта" с AI асистент и DealScore™.</p>
+                    <div class="mt-6 text-xs text-green-400 font-bold uppercase tracking-widest font-bold">Стартирай →</div>
                 </div>
-                <div class="glass p-10 opacity-50 relative overflow-hidden">
-                    <div class="text-4xl mb-4">🛡️</div>
-                    <h3 class="text-xl font-bold mb-2 uppercase">Asteroid Defense</h3>
-                    <p class="text-xs text-gray-500 leading-relaxed">Протоколи и гаранции. Отключва се за Rank: Commander.</p>
+
+                <!-- ASTEROID DEFENSE -->
+                <div id="card-asteroid" onclick="goToTool('asteroid')" class="glass p-8 rounded-3xl card-action group">
+                    <div class="text-4xl mb-4 group-hover:scale-110 transition text-blue-400">🛡️</div>
+                    <h3 class="text-xl font-bold mb-2 uppercase text-white">Asteroid Defense</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">Протоколи и гаранции с дигитален подпис. Статус: <span class="text-green-400 font-bold tracking-tighter uppercase">Достъпен</span></p>
+                    <div class="mt-6 text-xs text-blue-400 font-bold uppercase tracking-widest font-bold">Стартирай защита →</div>
                 </div>
-                <div class="glass p-10 opacity-50">
-                    <div class="text-4xl mb-4">📸</div>
-                    <h3 class="text-xl font-bold mb-2 uppercase">Signal Boost</h3>
-                    <p class="text-xs text-gray-500 leading-relaxed">QR маркетингови карти. Отключва се за Rank: Commander.</p>
+
+                <!-- SIGNAL BOOST -->
+                <div id="card-signal" onclick="goToTool('signal')" class="glass p-8 rounded-3xl card-action group">
+                    <div class="text-4xl mb-4 group-hover:scale-110 transition text-purple-400">📸</div>
+                    <h3 class="text-xl font-bold mb-2 uppercase text-white">Signal Boost</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">QR карти за Google Review и плащане. Статус: <span class="text-green-400 font-bold tracking-tighter uppercase">Достъпен</span></p>
+                    <div class="mt-6 text-xs text-purple-400 font-bold uppercase tracking-widest font-bold">Стартирай сигнал →</div>
                 </div>
             </div>
 
+            <!-- ИСТОРИЯ -->
             <div class="glass p-8">
-                <h3 class="space-font text-xs text-gray-500 mb-6 tracking-widest uppercase">Последни изстрелвания</h3>
-                <div id="historyTable" class="text-sm text-gray-400 italic">Все още няма записани мисии...</div>
+                <h3 class="space-font text-xs text-gray-500 mb-6 tracking-widest uppercase font-bold">Хронология на мисиите</h3>
+                <div id="historyTable" class="text-sm text-gray-500 italic">Свързване с архива на базата данни...</div>
             </div>
         </section>
 
         <!-- СЕКЦИЯ: НАСТРОЙКИ (SETTINGS) -->
         <section id="section-settings" class="hidden space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 text-left">
-                <!-- ФИРМЕНИ ДАННИ -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="glass p-8 space-y-4">
-                    <h3 class="neon-text font-bold mb-4 uppercase text-sm">Брандиране и Фирма</h3>
+                    <h3 class="neon-text font-bold mb-4 uppercase text-sm tracking-widest">Брандиране и Фирма</h3>
                     <div><label class="text-[10px] text-gray-500 font-bold uppercase">Име на фирма / Бранд</label><input type="text" id="set-name" class="input-dark"></div>
                     <div><label class="text-[10px] text-gray-500 font-bold uppercase">ЕИК (ако има)</label><input type="text" id="set-reg" class="input-dark"></div>
                     <div><label class="text-[10px] text-gray-500 font-bold uppercase">Телефон</label><input type="text" id="set-phone" class="input-dark"></div>
-                    <div><label class="text-[10px] text-gray-500 font-bold uppercase">IBAN за плащане</label><input type="text" id="set-iban" class="input-dark"></div>
-                    <div><label class="text-[10px] text-gray-500 font-bold uppercase">Лого URL (линк към снимка)</label><input type="text" id="set-logo" class="input-dark" placeholder="https://..."></div>
+                    <div><label class="text-[10px] text-gray-500 font-bold uppercase">IBAN</label><input type="text" id="set-iban" class="input-dark"></div>
+                    <div><label class="text-[10px] text-gray-500 font-bold uppercase">Лого URL</label><input type="text" id="set-logo" class="input-dark" placeholder="https://link-to-your-logo.png"></div>
+                    <button onclick="saveSettings()" id="saveSettingsBtn" class="w-full bg-green-500 text-black font-black py-4 rounded-xl mt-4 uppercase shadow-lg transition hover:scale-[1.02]">Запази Промените 💾</button>
                 </div>
-
-                <!-- НАСТРОЙКИ НА ДВИГАТЕЛЯ -->
-                <div class="glass p-8 space-y-4">
-                    <h3 class="neon-text font-bold mb-4 uppercase text-sm">Двигател на Калкулатора (PRO)</h3>
-                    <div>
-                        <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Основна мерна единица</label>
-                        <select id="set-unit" class="input-dark mt-1">
-                            <option value="кв.м">Квадратура (кв.м)</option>
-                            <option value="час">Време (час)</option>
-                            <option value="км">Разстояние (км)</option>
-                            <option value="бр">Количество (бр)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Заглавие на първа колона</label>
-                        <input type="text" id="set-col1" class="input-dark" placeholder="Напр. Вид услуга">
-                    </div>
-                    <div>
-                        <label class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">По подразбиране (Условия)</label>
-                        <textarea id="set-terms" class="input-dark h-24" placeholder="Твоите стандартни условия..."></textarea>
-                    </div>
-                    <button onclick="saveSettings()" class="w-full bg-green-500 text-black font-black py-4 rounded-xl mt-4 uppercase">Запази Промените 💾</button>
+                <div class="glass p-8">
+                    <h3 class="neon-text font-bold mb-4 uppercase text-sm tracking-widest">Информация за ранга</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed">Ти си в ранг <span class="text-green-400 font-bold" id="infoRank">Space Cadet</span>. Прави повече оферти, за да заслужиш титлата Galaxy Legend и да отключиш автоматични платени функции.</p>
                 </div>
             </div>
         </section>
 
-        <!-- СЕКЦИЯ: ДНЕВНИК (CALENDAR) -->
+        <!-- СЕКЦИЯ: ДНЕВНИК (CALENDAR & LIST) -->
         <section id="section-calendar" class="hidden">
-            <div class="max-w-md mx-auto glass p-8">
-                <h3 class="neon-text font-bold mb-6 text-center uppercase tracking-widest">Дневник на пилота</h3>
-                <div id="calendar-month-name" class="text-center font-bold mb-4 text-sm uppercase">Март 2026</div>
-                <div class="calendar-grid" id="calendar-grid">
-                    <!-- Зарежда се с JS -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <!-- Календар Grid -->
+                <div class="lg:col-span-5 glass p-8">
+                    <h3 class="neon-text font-bold mb-6 text-center uppercase tracking-widest">Дневник на пилота</h3>
+                    <div class="text-center font-bold mb-4 text-sm uppercase tracking-widest text-white">Март 2026</div>
+                    <div class="calendar-grid" id="calendar-grid"></div>
                 </div>
-                <p class="text-[10px] text-gray-500 mt-6 italic text-center">Кликни върху дата, за да добавиш бележка за мисия.</p>
+                <!-- Списък с бележки -->
+                <div class="lg:col-span-7 glass p-8 min-h-[400px]">
+                    <h3 class="text-[10px] font-bold text-gray-500 uppercase mb-6 tracking-widest">Активни бележки от мисии</h3>
+                    <div id="notesList" class="space-y-4">
+                        <p class="text-xs text-gray-600 italic">Няма бележки за този месец...</p>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- СЕКЦИЯ: АДМИН (ADMIN) -->
-        <section id="section-admin" class="hidden space-y-6">
-            <div class="glass p-8">
-                <h3 class="text-purple-500 font-bold mb-6 uppercase tracking-widest">Mothership Control 🛸</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                    <div class="bg-black/40 p-4 rounded-xl">
-                        <p class="text-[10px] text-gray-500 uppercase">Потребители</p>
-                        <p id="admin-users" class="text-2xl font-bold">0</p>
+        <section id="section-admin" class="hidden">
+            <div class="glass p-10">
+                <h3 class="text-purple-500 font-bold mb-8 uppercase tracking-widest space-font">Mothership Intelligence Center 🛸</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-black/40 p-6 rounded-2xl border border-white/5">
+                        <p class="text-[10px] text-gray-500 uppercase font-bold mb-2 tracking-widest">Общо Екипаж (Потребители)</p>
+                        <p id="admin-users" class="text-4xl font-black neon-text">0</p>
                     </div>
-                    <div class="bg-black/40 p-4 rounded-xl">
-                        <p class="text-[10px] text-gray-500 uppercase">Оферти</p>
-                        <p id="admin-offers" class="text-2xl font-bold">0</p>
+                    <div class="bg-black/40 p-6 rounded-2xl border border-white/5">
+                        <p class="text-[10px] text-gray-500 uppercase font-bold mb-2 tracking-widest">Изстреляни Оферти</p>
+                        <p id="admin-offers" class="text-4xl font-black text-blue-400">0</p>
                     </div>
-                </div>
-                <!-- Тук ще се добави списък за триене на неактивни -->
-                <div class="mt-10">
-                    <button onclick="cleanupUsers()" class="border border-red-500 text-red-500 px-6 py-2 rounded-full text-xs uppercase font-bold hover:bg-red-500 hover:text-white transition">Изчисти неактивни (>60 дни)</button>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- MODAL ЗА БЕЛЕЖКИ -->
-    <div id="noteModal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden p-4 z-50">
+    <!-- МОДАЛ ЗА БЕЛЕЖКА -->
+    <div id="noteModal" class="fixed inset-0 bg-black/90 flex items-center justify-center hidden p-4 z-50">
         <div class="glass p-8 w-full max-w-sm">
-            <h3 id="noteDate" class="neon-text font-bold mb-4">Дата</h3>
-            <textarea id="noteText" class="input-dark h-32" placeholder="Напиши бележка..."></textarea>
-            <div class="flex gap-2 mt-4">
-                <button onclick="saveNote()" class="flex-grow bg-green-500 text-black font-bold py-2 rounded-lg">Запази</button>
-                <button onclick="closeNote()" class="px-4 py-2 border border-white/10 rounded-lg">Отказ</button>
+            <h3 id="noteDate" class="neon-text font-bold mb-4 uppercase tracking-widest">Дата</h3>
+            <textarea id="noteText" class="input-dark h-32 text-sm" placeholder="Напиши бележка за мисията..."></textarea>
+            <div class="flex gap-2 mt-6">
+                <button onclick="saveNote()" class="flex-grow bg-green-500 text-black font-bold py-3 rounded-xl uppercase text-xs">Запази</button>
+                <button onclick="closeNote()" class="px-6 py-3 border border-white/10 rounded-xl text-xs uppercase font-bold">Отказ</button>
             </div>
         </div>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbzhckte9EXQX9OA5CLg5DkIGQVudFjlj8PypwLKvd880fPEn-Zr-bPWlUAvdCazRd1m8A/exec";
-        const SUPER_ADMIN_EMAIL = "mestimworkspace@gmail.com"; // Сложи твоя имейл!
+        const API_URL = "https://script.google.com/macros/s/AKfycbzhckte9EXQX9OA5CLg5DkIGQVudFjlj8PypwLKvd880fPEn-Zr-bPWlUAvdCazRd1m8A/exec"; // СЛОЖИ ТВОЯ URL ТУК!
+        const SUPER_ADMIN_EMAIL = "mestimworkspace@gmail.com"; // СЛОЖИ ТВОЯ ИМЕЙЛ ТУК!
 
         let userData = JSON.parse(localStorage.getItem('dr_user'));
         if (!userData) window.location.href = "index.html";
 
-        // Първоначално зареждане
+        // INIT
         document.getElementById('pilotName').innerText = userData.name;
         document.getElementById('rankBadge').innerText = userData.rank || "Space Cadet";
+        document.getElementById('infoRank').innerText = userData.rank || "Space Cadet";
         if (userData.email === SUPER_ADMIN_EMAIL) document.getElementById('btn-admin').classList.remove('hidden');
 
         function showSection(section) {
@@ -178,18 +176,27 @@
             if (section === 'settings') loadSettings();
         }
 
-        // --- ЛОГИКА ЗА НАСТРОЙКИ ---
+        function goToTool(tool) {
+            if (userData.rank === "Galaxy Legend" || userData.status === "Pro" || userData.email === SUPER_ADMIN_EMAIL) {
+                if (tool === 'asteroid') window.location.href = "protocols.html";
+                if (tool === 'signal') window.location.href = "marketing.html";
+            } else {
+                alert("🔒 Модулът е заключен. Трябва ти статус Pro или ранг Galaxy Legend!");
+            }
+        }
+
+        // SETTINGS LOGIC
         function loadSettings() {
             document.getElementById('set-name').value = userData.name || "";
-            document.getElementById('set-reg').value = userData.regNumber || "";
+            document.getElementById('set-reg').value = userData.reg || "";
             document.getElementById('set-phone').value = userData.phone || "";
             document.getElementById('set-iban').value = userData.iban || "";
             document.getElementById('set-logo').value = userData.logo || "";
         }
 
         async function saveSettings() {
-            const btn = event.target;
-            btn.innerText = "Синхронизиране...";
+            const btn = document.getElementById('saveSettingsBtn');
+            btn.innerText = "СИНХРОНИЗИРАНЕ...";
             
             const payload = {
                 action: "updateProfile",
@@ -205,44 +212,75 @@
             const result = await res.json();
             
             if (result.result === 'success') {
-                userData = {...userData, ...payload};
+                userData = {...userData, ...payload, reg: payload.regNumber}; // Update local data
                 localStorage.setItem('dr_user', JSON.stringify(userData));
-                alert("Мисията по обновяване на данните е успешна! 🚀");
-                location.reload();
+                btn.innerText = "ЗАПАЗЕНО! ✅";
+                setTimeout(() => btn.innerText = "ЗАПАЗИ ПРОМЕНИТЕ 💾", 2000);
             }
         }
 
-        // --- ЛОГИКА ЗА КАЛЕНДАР ---
+        // CALENDAR & NOTES LOGIC
         let selectedDate = "";
         function generateCalendar() {
             const grid = document.getElementById('calendar-grid');
+            const listContainer = document.getElementById('notesList');
             grid.innerHTML = "";
-            const daysInMonth = 31; // За опростяване
+            listContainer.innerHTML = "";
+
+            let notes = {};
+            try { notes = JSON.parse(userData.notes || "{}"); } catch(e) { notes = {}; }
+
+            const daysInMonth = 31;
+            let hasAnyNote = false;
+
             for (let i = 1; i <= daysInMonth; i++) {
+                const dateKey = `${i}-03-2026`;
                 const day = document.createElement('div');
                 day.className = "day-cell";
+                if (notes[dateKey]) {
+                    day.classList.add('has-note');
+                    hasAnyNote = true;
+                    
+                    const noteDiv = document.createElement('div');
+                    noteDiv.className = "glass p-4 border-l-4 border-green-400";
+                    noteDiv.innerHTML = `<p class="text-[10px] text-green-400 font-bold mb-1 uppercase">${dateKey}</p>
+                                         <p class="text-xs text-white">${notes[dateKey]}</p>`;
+                    listContainer.appendChild(noteDiv);
+                }
                 day.innerText = i;
-                day.onclick = () => openNote(i);
+                day.onclick = () => {
+                    selectedDate = dateKey;
+                    document.getElementById('noteDate').innerText = selectedDate;
+                    document.getElementById('noteText').value = notes[dateKey] || "";
+                    document.getElementById('noteModal').classList.remove('hidden');
+                };
                 grid.appendChild(day);
             }
-        }
-
-        function openNote(day) {
-            selectedDate = day + "-03-2026"; // Пример
-            document.getElementById('noteDate').innerText = selectedDate;
-            document.getElementById('noteModal').classList.remove('hidden');
+            if (!hasAnyNote) listContainer.innerHTML = `<p class="text-xs text-gray-600 italic">Дневникът е празен. Добави първата си бележка.</p>`;
         }
 
         function closeNote() { document.getElementById('noteModal').classList.add('hidden'); }
 
         async function saveNote() {
             const note = document.getElementById('noteText').value;
-            // Тук по-късно ще добавим запис в Google Sheets (NotesJSON)
-            alert("Бележката е записана в дневника на " + selectedDate);
-            closeNote();
+            let notes = {};
+            try { notes = JSON.parse(userData.notes || "{}"); } catch(e) {}
+            
+            notes[selectedDate] = note;
+            const payload = { action: "saveNote", email: userData.email, date: selectedDate, note: note };
+
+            const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const result = await res.json();
+
+            if (result.result === 'success') {
+                userData.notes = JSON.stringify(notes);
+                localStorage.setItem('dr_user', JSON.stringify(userData));
+                generateCalendar();
+                closeNote();
+            }
         }
 
-        // --- АДМИН ЛОГИКА ---
+        // ADMIN STATS
         async function showAdmin() {
             showSection('admin');
             const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({action: 'getAdminStats'}) });
